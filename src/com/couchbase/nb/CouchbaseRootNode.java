@@ -13,6 +13,7 @@ public class CouchbaseRootNode extends AbstractNode {
     public CouchbaseRootNode() {
         super(Children.LEAF);
         setDisplayName("Couchbase Root");
+        setIconBaseWithExtension("com/couchbase/nb/couchbase-icon.jpeg");
     }
     
 }
