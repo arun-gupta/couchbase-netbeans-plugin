@@ -10,3 +10,5 @@ This repository is the work-in-progress for Netbeans plugin for Couchbase. You c
 ... Started a new NetBeans plugin
 ... Couchbase Node configured in NetBeans
 
+Upcoming list of features: https://github.com/arun-gupta/couchbase-netbeans-plugin/issues
+
