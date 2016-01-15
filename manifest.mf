@@ -1,6 +1,7 @@
 Manifest-Version: 1.0
 AutoUpdate-Show-In-Client: true
 OpenIDE-Module: com.couchbase.nb
+OpenIDE-Module-Layer: com/couchbase/nb/layer.xml
 OpenIDE-Module-Localizing-Bundle: com/couchbase/nb/Bundle.properties
 OpenIDE-Module-Specification-Version: 1.0
 
