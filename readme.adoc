@@ -9,6 +9,12 @@ This repository is the work-in-progress for Netbeans plugin for Couchbase. You c
 ... GitHub repository created
 ... Started a new NetBeans plugin
 ... Couchbase Node configured in NetBeans
+.. Part 2
+... Installed and set up Couchbase server
+... Checked out https://github.com/arun-gupta/couchbase-javaee using Git in NetBeans
+... Succeeded to run the above from NetBeans, without a problem, to WildFly
+... Created a new NetBeans plugin for Couchbase, using Maven
+... Used utility methods to connect to the Couchbase server from the Mavenized NetBeans plugin
 
 Upcoming list of features: https://github.com/arun-gupta/couchbase-netbeans-plugin/issues
 
