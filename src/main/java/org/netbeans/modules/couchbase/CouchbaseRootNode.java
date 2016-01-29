@@ -9,28 +9,28 @@ import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 
 @ServicesTabNodeRegistration(
-        name="Couchbase", 
+        name = "Couchbase",
         displayName = "Couchbase",
         iconResource = "org/netbeans/modules/couchbase/couchbase-icon.jpeg")
 public class CouchbaseRootNode extends AbstractNode {
-    
+
     @StaticResource
     private static final String ICON = "org/netbeans/modules/couchbase/couchbase-icon.jpeg";
-    
+
     public CouchbaseRootNode() {
         super(Children.LEAF);
-        setDisplayName("Couchbase Root");
+        setDisplayName("Couchbase");
         setIconBaseWithExtension(ICON);
     }
 
     @Override
-    public Action getPreferredAction() {
-        return new AbstractAction("Bla") {
+    public Action[] getActions(boolean context) {
+        return new Action[]{new AbstractAction("Connect to Couchbase") {
             @Override
             public void actionPerformed(ActionEvent e) {
                 CouchbaseConnect.main();
             }
-        };
+        }};
     }
-    
+
 }
