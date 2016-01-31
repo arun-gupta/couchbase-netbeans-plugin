@@ -33,17 +33,17 @@ public class CouchbaseConnect {
 // write out info about our buckets
         for (BucketSettings b : cmgr.getBuckets()) {
 // Open the bucket
-            Bucket bucket = cluster.openBucket(b.name());
+Bucket bucket = cluster.openBucket(b.name());
 
-            System.out.printf("Looking for doccount for bucket: %s\n", b.name());
+System.out.printf("Looking for doccount for bucket: %s\n", b.name());
 // Run a N1QL query to find out the number of documents
-            N1qlQueryResult res = bucket.query(N1qlQuery.simple(String.format("select count(*) as doccount from `%s`", b.name())));
-            for (JsonObject error : res.errors()) {
-                System.out.printf("  got error: %s\n", error.toString());
-            }
-            for (N1qlQueryRow row : res.allRows()) {
-                System.out.printf("  got doccount: %d\n", row.value().get("doccount"));
-            }
+N1qlQueryResult res = bucket.query(N1qlQuery.simple(String.format("select count(*) as doccount from `%s`", b.name())));
+for (JsonObject error : res.errors()) {
+    System.out.printf("  got error: %s\n", error.toString());
+}
+for (N1qlQueryRow row : res.allRows()) {
+    System.out.printf("  got doccount: %d\n", row.value().get("doccount"));
+}
         }
     }
 }
