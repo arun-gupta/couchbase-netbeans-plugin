@@ -15,7 +15,7 @@ public class RowNode extends BeanNode<CouchBaseRow> {
     
     public RowNode(CouchBaseRow row) throws IntrospectionException {
         super(row, Children.create(new LeafValueChildFactory(row.getRow()), true));
-        setDisplayName("Row " + row.getI());
+        setDisplayName("Document " + row.getI());
         setIconBaseWithExtension(ICON);
     }
 
