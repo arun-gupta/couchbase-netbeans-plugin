@@ -4,10 +4,8 @@ import com.couchbase.client.java.Bucket;
 import com.couchbase.client.java.query.N1qlQuery;
 import com.couchbase.client.java.query.N1qlQueryResult;
 import com.couchbase.client.java.query.N1qlQueryRow;
-import static com.couchbase.client.java.query.Select.select;
 import static com.couchbase.client.java.query.dsl.Expression.i;
 import java.beans.IntrospectionException;
-import java.util.Iterator;
 import java.util.List;
 import java.util.prefs.PreferenceChangeEvent;
 import java.util.prefs.PreferenceChangeListener;
@@ -18,8 +16,6 @@ import org.openide.nodes.ChildFactory;
 import org.openide.nodes.Node;
 import org.openide.util.Exceptions;
 import org.openide.util.NbPreferences;
-import static com.couchbase.client.java.query.Select.select;
-import static com.couchbase.client.java.query.Select.select;
 import static com.couchbase.client.java.query.Select.select;
 
 public class DocumentChildFactory extends ChildFactory<CouchBaseRow> implements PreferenceChangeListener {
