@@ -46,7 +46,7 @@ public class DocumentChildFactory extends ChildFactory<CouchBaseRow> implements 
         List<N1qlQueryRow> rows = result.allRows();
         for (int i = 0; i < rows.size(); i++) {
             N1qlQueryRow row = rows.get(i);
-            list.add(new CouchBaseRow(bucketName, i, row));
+            list.add(new CouchBaseRow(bucketName, i+1, row));
         }
         return true;
     }
