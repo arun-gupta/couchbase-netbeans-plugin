@@ -30,20 +30,24 @@ public class DocumentChildFactory extends ChildFactory<CouchBaseRow> implements 
         this.pref.addPreferenceChangeListener(this);
     }
 
+    //http://developer.couchbase.com/documentation/server/4.0/getting-started/first-n1ql-query.html
     @Override
     protected boolean createKeys(List<CouchBaseRow> list) {
         int numberOfRows = Integer.parseInt(pref.get(bucket.name() + "-numberOfRows", "2"));
+        //Force indexing:
         bucket.query(N1qlQuery.simple(String.format("create primary index on `%s`", bucket.name())));
-        N1qlQuery query = N1qlQuery
+        //Start of Finding all documents in bucket: 
+        N1qlQuery findLimitedDocumentsInBucket = N1qlQuery
                 .simple(select("*")
                         .from(i(bucket.name()))
                         .limit(numberOfRows));
-        N1qlQueryResult result = bucket.query(query);
-        List<N1qlQueryRow> rows = result.allRows();
-        for (int i = 0; i < rows.size(); i++) {
-            N1qlQueryRow row = rows.get(i);
+        N1qlQueryResult resultOfFindingLimitedDocumentsInBucket = bucket.query(findLimitedDocumentsInBucket);
+        List<N1qlQueryRow> rowsOfFindingLimitedDocumentsInBucket = resultOfFindingLimitedDocumentsInBucket.allRows();
+        for (int i = 0; i < rowsOfFindingLimitedDocumentsInBucket.size(); i++) {
+            N1qlQueryRow row = rowsOfFindingLimitedDocumentsInBucket.get(i);
             list.add(new CouchBaseRow(bucketName, i+1, row));
         }
+        //End of Finding all documents in bucket: 
         return true;
     }
 
