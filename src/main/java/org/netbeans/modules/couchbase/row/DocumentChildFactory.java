@@ -18,15 +18,19 @@ import org.openide.nodes.ChildFactory;
 import org.openide.nodes.Node;
 import org.openide.util.Exceptions;
 import org.openide.util.NbPreferences;
+import static com.couchbase.client.java.query.Select.select;
+import static com.couchbase.client.java.query.Select.select;
+import static com.couchbase.client.java.query.Select.select;
 
-public class RowChildFactory extends ChildFactory<CouchBaseRow> implements PreferenceChangeListener {
+public class DocumentChildFactory extends ChildFactory<CouchBaseRow> implements PreferenceChangeListener {
 
     private final Bucket bucket;
-
+    private final String bucketName;
     private final Preferences pref = NbPreferences.forModule(BucketNode.class);
 
-    public RowChildFactory(Bucket bean) {
+    public DocumentChildFactory(Bucket bean) {
         this.bucket = bean;
+        this.bucketName = bucket.name();
         this.pref.addPreferenceChangeListener(this);
     }
 
@@ -42,16 +46,16 @@ public class RowChildFactory extends ChildFactory<CouchBaseRow> implements Prefe
         List<N1qlQueryRow> rows = result.allRows();
         for (int i = 0; i < rows.size(); i++) {
             N1qlQueryRow row = rows.get(i);
-            list.add(new CouchBaseRow(i, row));
+            list.add(new CouchBaseRow(bucketName, i, row));
         }
         return true;
     }
 
     @Override
     protected Node createNodeForKey(CouchBaseRow key) {
-        RowNode rn = null;
+        DocumentNode rn = null;
         try {
-            rn = new RowNode(key);
+            rn = new DocumentNode(key);
         } catch (IntrospectionException ex) {
             Exceptions.printStackTrace(ex);
         }

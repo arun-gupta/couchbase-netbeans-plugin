@@ -4,14 +4,24 @@ import com.couchbase.client.java.query.N1qlQueryRow;
 
 public class CouchBaseRow {
 
+    String bucketName;
     int i;
     N1qlQueryRow row;
 
-    public CouchBaseRow(int i, N1qlQueryRow row) {
+    public CouchBaseRow(String bucketName, int i, N1qlQueryRow row) {
+        this.bucketName = bucketName;
         this.i = i;
         this.row = row;
     }
 
+    public String getBucketName() {
+        return bucketName;
+    }
+
+    public void setBucketName(String bucketName) {
+        this.bucketName = bucketName;
+    }
+    
     public int getI() {
         return i;
     }
