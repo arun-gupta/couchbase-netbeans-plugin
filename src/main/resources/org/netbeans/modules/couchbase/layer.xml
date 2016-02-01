@@ -3,13 +3,13 @@
 <filesystem>
      <folder name="Actions">
         <folder name="Bucket">
-            <file name="org-netbeans-modules-couchbase-bucket-NoOfDisplayedDocumentsPanel.instance">
+            <file name="org-netbeans-modules-couchbase-bucket-QueryContainerTopComponent.instance">
                 <attr methodvalue="org.openide.awt.Actions.context" name="instanceCreate"/>
-                <attr name="component" newvalue="org.netbeans.modules.couchbase.bucket.NoOfDisplayedDocumentsPanel"/>
-                <attr name="preferredID" stringvalue="NoOfDisplayedDocumentsPanel"/>
+                <attr name="component" newvalue="org.netbeans.modules.couchbase.bucket.QueryContainerTopComponent"/>
+                <attr name="preferredID" stringvalue="QueryContainerTopComponent"/>
                 <attr name="type" stringvalue="com.couchbase.client.java.Bucket"/>
                 <attr methodvalue="org.openide.awt.Actions.inject" name="delegate"/>
-                <attr name="injectable" stringvalue="org.netbeans.modules.couchbase.bucket.NoOfDisplayedDocumentsPanel"/>
+                <attr name="injectable" stringvalue="org.netbeans.modules.couchbase.bucket.QueryContainerTopComponent"/>
                 <attr name="selectionType" stringvalue="EXACTLY_ONE"/>
                 <attr name="displayName" stringvalue="Analyze Bucket"/>
             </file>
