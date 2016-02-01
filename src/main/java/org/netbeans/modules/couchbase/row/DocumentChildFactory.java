@@ -23,31 +23,30 @@ public class DocumentChildFactory extends ChildFactory<CouchBaseRow> implements 
     private final Bucket bucket;
     private final String bucketName;
     private final Preferences pref = NbPreferences.forModule(BucketNode.class);
+    private N1qlQuery query;
 
     public DocumentChildFactory(Bucket bean) {
         this.bucket = bean;
         this.bucketName = bucket.name();
         this.pref.addPreferenceChangeListener(this);
+        this.query = N1qlQuery
+                    .simple(select("*")
+                            .from(i(bucket.name()))
+                            .limit(3));
     }
 
     //http://developer.couchbase.com/documentation/server/4.0/getting-started/first-n1ql-query.html
     @Override
     protected boolean createKeys(List<CouchBaseRow> list) {
-        int numberOfRows = Integer.parseInt(pref.get(bucket.name() + "-numberOfRows", "2"));
         //Force indexing:
         bucket.query(N1qlQuery.simple(String.format("create primary index on `%s`", bucket.name())));
-        //Start of Finding all documents in bucket: 
-        N1qlQuery findLimitedDocumentsInBucket = N1qlQuery
-                .simple(select("*")
-                        .from(i(bucket.name()))
-                        .limit(numberOfRows));
-        N1qlQueryResult resultOfFindingLimitedDocumentsInBucket = bucket.query(findLimitedDocumentsInBucket);
+        //Run query:
+        N1qlQueryResult resultOfFindingLimitedDocumentsInBucket = bucket.query(query);
         List<N1qlQueryRow> rowsOfFindingLimitedDocumentsInBucket = resultOfFindingLimitedDocumentsInBucket.allRows();
         for (int i = 0; i < rowsOfFindingLimitedDocumentsInBucket.size(); i++) {
             N1qlQueryRow row = rowsOfFindingLimitedDocumentsInBucket.get(i);
-            list.add(new CouchBaseRow(bucketName, i+1, row));
+            list.add(new CouchBaseRow(bucketName, i + 1, row));
         }
-        //End of Finding all documents in bucket: 
         return true;
     }
 
@@ -64,7 +63,21 @@ public class DocumentChildFactory extends ChildFactory<CouchBaseRow> implements 
 
     @Override
     public void preferenceChange(PreferenceChangeEvent evt) {
-        if (evt.getKey().equals(bucket.name() + "-numberOfRows")) {
+        int numberOfRows = Integer.parseInt(pref.get(bucket.name() + "-numberOfRows", "3"));
+        if (evt.getKey().startsWith(bucket.name() + "-numberOfRows")) {
+            query = N1qlQuery
+                    .simple(select("*")
+                            .from(i(bucket.name()))
+                            .limit(numberOfRows));
+            refresh(true);
+        } else if (evt.getKey().startsWith(bucket.name() + "-where") || evt.getKey().startsWith(bucket.name() + "-equals")) {
+            String where = pref.get(bucket.name() + "-where", "-");
+            String equals = pref.get(bucket.name() + "-equals", "-");
+            query = N1qlQuery
+                    .simple(select("*")
+                            .from(i(bucket.name()))
+                            .where(where + " =\"" + equals + "\"")
+                            .limit(numberOfRows));
             refresh(true);
         }
     }
