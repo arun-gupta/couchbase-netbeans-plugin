@@ -44,6 +44,11 @@
     </repositories>
     <dependencies>
         <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-modules-diff</artifactId>
+            <version>RELEASE81</version>
+        </dependency>
+        <dependency>
             <groupId>com.miglayout</groupId>
             <artifactId>miglayout</artifactId>
             <version>3.7.4</version>
@@ -131,6 +136,11 @@
             <artifactId>nb-javac-api</artifactId>
             <version>RELEASE81</version>
             <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-text</artifactId>
+            <version>RELEASE81</version>
         </dependency>
     </dependencies>
     <properties>
