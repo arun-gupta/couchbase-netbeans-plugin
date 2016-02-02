@@ -8,10 +8,11 @@ import java.beans.IntrospectionException;
 import java.util.List;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import org.netbeans.modules.couchbase.connection.ConnectionUtilities;
+import org.netbeans.modules.couchbase.CouchbaseRootNode;
 import org.openide.nodes.ChildFactory;
 import org.openide.nodes.Node;
 import org.openide.util.Exceptions;
+import org.openide.util.NbPreferences;
 
 public class BucketChildFactory extends ChildFactory.Detachable<Bucket> {
 
@@ -25,7 +26,7 @@ public class BucketChildFactory extends ChildFactory.Detachable<Bucket> {
 
     @Override
     protected void addNotify() {
-        ConnectionUtilities.addChangeListener(listener = new ChangeListener() {
+        RefreshBucketListTrigger.addChangeListener(listener = new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent ev) {
                 refresh(true);
@@ -36,15 +37,15 @@ public class BucketChildFactory extends ChildFactory.Detachable<Bucket> {
     @Override
     protected void removeNotify() {
         if (listener != null) {
-            ConnectionUtilities.removeChangeListener(listener);
+            RefreshBucketListTrigger.removeChangeListener(listener);
             listener = null;
         }
     }
 
     @Override
     protected boolean createKeys(List<Bucket> list) {
-        String login = "Administrator";
-        String password = "adminadmin";
+        String login = NbPreferences.forModule(CouchbaseRootNode.class).get("clusterLogin", "error!");
+        String password = NbPreferences.forModule(CouchbaseRootNode.class).get("clusterPassword", "error!");
         ClusterManager cmgr = cluster.clusterManager(login, password);
         for (BucketSettings bs : cmgr.getBuckets()) {
             String bucketName = bs.name();

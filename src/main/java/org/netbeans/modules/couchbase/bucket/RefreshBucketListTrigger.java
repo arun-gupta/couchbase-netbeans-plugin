@@ -1,11 +1,11 @@
-package org.netbeans.modules.couchbase.connection;
+package org.netbeans.modules.couchbase.bucket;
 
 import javax.swing.event.ChangeListener;
 import org.openide.util.ChangeSupport;
 
-public class ConnectionUtilities {
+public class RefreshBucketListTrigger {
 
-    private static final ChangeSupport cs = new ChangeSupport(ConnectionUtilities.class);
+    private static final ChangeSupport cs = new ChangeSupport(RefreshBucketListTrigger.class);
 
     public static void addChangeListener(ChangeListener listener) {
         cs.addChangeListener(listener);
@@ -15,7 +15,7 @@ public class ConnectionUtilities {
         cs.removeChangeListener(listener);
     }
 
-    public static void changed() {
+    public static void trigger() {
         cs.fireChange();
     }
 
