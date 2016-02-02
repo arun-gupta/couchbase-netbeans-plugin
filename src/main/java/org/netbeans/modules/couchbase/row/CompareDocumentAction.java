@@ -11,18 +11,23 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.List;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.StyledDocument;
 import org.netbeans.api.diff.Diff;
 import org.netbeans.api.diff.DiffView;
 import org.netbeans.api.diff.StreamSource;
 import org.netbeans.modules.couchbase.model.CouchBaseRow;
+import org.netbeans.modules.editor.indent.api.Reformat;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionRegistration;
+import org.openide.cookies.EditorCookie;
 import org.openide.filesystems.FileLock;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileSystem;
 import org.openide.filesystems.FileUtil;
 import org.openide.loaders.DataFolder;
 import org.openide.loaders.DataObject;
+import org.openide.text.NbDocument;
 import org.openide.util.Exceptions;
 import org.openide.util.NbBundle.Messages;
 import org.openide.windows.TopComponent;
@@ -96,13 +101,53 @@ public final class CompareDocumentAction implements ActionListener {
                     fileLock2.releaseLock();
                 }
             }
+            EditorCookie ec = jsonFile1.getLookup().lookup(EditorCookie.class);
+            final StyledDocument doc = ec.openDocument();
+            final Reformat rf = Reformat.get(doc);
+            rf.lock();
+            try {
+                NbDocument.runAtomicAsUser(doc, new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            rf.reformat(0, doc.getLength());
+                        } catch (BadLocationException ex) {
+                        }
+                    }
+                });
+            } catch (BadLocationException ex) {
+                Exceptions.printStackTrace(ex);
+            } finally {
+                rf.unlock();
+            }
+            ec.saveDocument();
+            EditorCookie ec2 = jsonFile2.getLookup().lookup(EditorCookie.class);
+            final StyledDocument doc2 = ec2.openDocument();
+            final Reformat rf2 = Reformat.get(doc2);
+            rf2.lock();
+            try {
+                NbDocument.runAtomicAsUser(doc2, new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            rf2.reformat(0, doc2.getLength());
+                        } catch (BadLocationException ex) {
+                        }
+                    }
+                });
+            } catch (BadLocationException ex) {
+                Exceptions.printStackTrace(ex);
+            } finally {
+                rf2.unlock();
+            }
+            ec2.saveDocument();
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         }
         StreamSource source1;
         try {
-            source1 = StreamSource.createSource("name1", "title1", "text/x-json", new InputStreamReader(obj1.getInputStream()));
-            StreamSource source2 = StreamSource.createSource("name2", "title2", "text/x-json", new InputStreamReader(obj2.getInputStream()));
+            source1 = StreamSource.createSource(String.valueOf(cbr.getI()), String.valueOf(cbr.getI()), "text/x-json", new InputStreamReader(obj1.getInputStream()));
+            StreamSource source2 = StreamSource.createSource(String.valueOf(cbr2.getI()), String.valueOf(cbr2.getI()), "text/x-json", new InputStreamReader(obj2.getInputStream()));
             DiffView view = Diff.getDefault().createDiff(source1, source2);
             TopComponent tc = new TopComponent();
             tc.setDisplayName("Diff Window");
