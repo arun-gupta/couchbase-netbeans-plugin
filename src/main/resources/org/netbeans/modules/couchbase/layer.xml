@@ -11,7 +11,6 @@
         <folder name="Bucket">
             <file name="org-netbeans-modules-couchbase-bucket-queries-NoOfDisplayedDocumentsQuery.instance">
                 <attr methodvalue="org.openide.awt.Actions.context" name="instanceCreate"/>
-                <attr name="component" newvalue="org.netbeans.modules.couchbase.bucket.queries.NoOfDisplayedDocumentsQuery"/>
                 <attr name="type" stringvalue="com.couchbase.client.java.Bucket"/>
                 <attr methodvalue="org.openide.awt.Actions.inject" name="delegate"/>
                 <attr name="injectable" stringvalue="org.netbeans.modules.couchbase.bucket.queries.NoOfDisplayedDocumentsQuery"/>
@@ -20,7 +19,6 @@
             </file>
             <file name="org-netbeans-modules-couchbase-bucket-queries-WhereDisplayedDocumentsQuery.instance">
                 <attr methodvalue="org.openide.awt.Actions.context" name="instanceCreate"/>
-                <attr name="component" newvalue="org.netbeans.modules.couchbase.bucket.queries.WhereDisplayedDocumentsQuery"/>
                 <attr name="type" stringvalue="com.couchbase.client.java.Bucket"/>
                 <attr methodvalue="org.openide.awt.Actions.inject" name="delegate"/>
                 <attr name="injectable" stringvalue="org.netbeans.modules.couchbase.bucket.queries.WhereDisplayedDocumentsQuery"/>
