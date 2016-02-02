@@ -1,13 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.2//EN" "http://www.netbeans.org/dtds/filesystem-1_2.dtd">
 <filesystem>
-    <folder name="Couchbase">
-        <file name="NoOfDisplayedDocumentsPanel.instance">
-            <attr name="instanceClass" stringvalue="org.netbeans.modules.couchbase.bucket.NoOfDisplayedDocumentsPanel"/>
-            <attr name="instanceOf" stringvalue="javax.swing.JPanel"/>
-        </file>
-    </folder>
-     <folder name="Actions">
+    <folder name="Actions">
         <folder name="Bucket">
             <file name="org-netbeans-modules-couchbase-bucket-queries-NoOfDisplayedDocumentsQuery.instance">
                 <attr methodvalue="org.openide.awt.Actions.context" name="instanceCreate"/>
@@ -27,5 +21,4 @@
             </file>
         </folder>
     </folder>
-
 </filesystem>
