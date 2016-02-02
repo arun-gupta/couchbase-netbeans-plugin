@@ -34,7 +34,7 @@ import org.openide.windows.TopComponent;
 
 @ActionID(
         category = "Document",
-        id = "org.netbeans.modules.couchbase.row.CompareDocumentAction"
+        id = "org.netbeans.modules.couchbase.row.BCompareDocumentAction"
 )
 @ActionRegistration(
         displayName = "#CTL_CompareDocumentAction"

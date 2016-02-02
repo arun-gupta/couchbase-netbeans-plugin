@@ -27,7 +27,7 @@ import org.openide.util.NbBundle.Messages;
 
 @ActionID(
         category = "Document",
-        id = "org.netbeans.modules.couchbase.row.OpenDocumentAction"
+        id = "org.netbeans.modules.couchbase.row.AOpenDocumentAction"
 )
 @ActionRegistration(
         displayName = "#CTL_OpenDocumentAction"
