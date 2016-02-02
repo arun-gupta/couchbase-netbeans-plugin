@@ -18,7 +18,7 @@ import org.openide.windows.WindowManager;
         persistenceType = TopComponent.PERSISTENCE_ALWAYS
 )
 @TopComponent.Registration(mode = "navigator", openAtStartup = false)
-public class QueryContainerTopComponent extends ObjectTopComponent implements ActionListener {
+public class QueryContainerTopComponent extends TopComponent implements ActionListener {
 
     private Bucket bucket;
 
