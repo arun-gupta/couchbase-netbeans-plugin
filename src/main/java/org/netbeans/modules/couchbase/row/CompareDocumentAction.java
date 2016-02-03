@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedOutputStream;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -101,56 +100,26 @@ public final class CompareDocumentAction implements ActionListener {
                     fileLock2.releaseLock();
                 }
             }
-            EditorCookie ec = jsonFile1.getLookup().lookup(EditorCookie.class);
-            final StyledDocument doc = ec.openDocument();
-            final Reformat rf = Reformat.get(doc);
-            rf.lock();
-            try {
-                NbDocument.runAtomicAsUser(doc, new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            rf.reformat(0, doc.getLength());
-                        } catch (BadLocationException ex) {
-                        }
-                    }
-                });
-            } catch (BadLocationException ex) {
-                Exceptions.printStackTrace(ex);
-            } finally {
-                rf.unlock();
-            }
-            ec.saveDocument();
-            EditorCookie ec2 = jsonFile2.getLookup().lookup(EditorCookie.class);
-            final StyledDocument doc2 = ec2.openDocument();
-            final Reformat rf2 = Reformat.get(doc2);
-            rf2.lock();
-            try {
-                NbDocument.runAtomicAsUser(doc2, new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            rf2.reformat(0, doc2.getLength());
-                        } catch (BadLocationException ex) {
-                        }
-                    }
-                });
-            } catch (BadLocationException ex) {
-                Exceptions.printStackTrace(ex);
-            } finally {
-                rf2.unlock();
-            }
-            ec2.saveDocument();
+            formatDocument1(jsonFile1);
+            formatDocument2(jsonFile2);
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         }
         StreamSource source1;
         try {
-            source1 = StreamSource.createSource(String.valueOf(cbr.getI()), String.valueOf(cbr.getI()), "text/x-json", new InputStreamReader(obj1.getInputStream()));
-            StreamSource source2 = StreamSource.createSource(String.valueOf(cbr2.getI()), String.valueOf(cbr2.getI()), "text/x-json", new InputStreamReader(obj2.getInputStream()));
+            source1 = StreamSource.createSource(
+                    String.valueOf(cbr.getBucketName()+"-"+cbr.getI()), 
+                    cbr.getBucketName()+"-"+String.valueOf(cbr.getI()), 
+                    "text/x-json", 
+                    new InputStreamReader(obj1.getInputStream()));
+            StreamSource source2 = StreamSource.createSource(
+                    String.valueOf(cbr.getBucketName()+"-"+cbr2.getI()), 
+                    cbr2.getBucketName()+"-"+String.valueOf(cbr2.getI()), 
+                    "text/x-json", 
+                    new InputStreamReader(obj2.getInputStream()));
             DiffView view = Diff.getDefault().createDiff(source1, source2);
             TopComponent tc = new TopComponent();
-            tc.setDisplayName("Diff Window");
+            tc.setDisplayName("Couchbase Diff");
             tc.setLayout(new BorderLayout());
             tc.add(view.getComponent());
             tc.open();
@@ -160,6 +129,52 @@ public final class CompareDocumentAction implements ActionListener {
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         }
+    }
+
+    private void formatDocument1(DataObject jsonFile1) throws IOException {
+        EditorCookie ec = jsonFile1.getLookup().lookup(EditorCookie.class);
+        final StyledDocument doc = ec.openDocument();
+        final Reformat rf = Reformat.get(doc);
+        rf.lock();
+        try {
+            NbDocument.runAtomicAsUser(doc, new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        rf.reformat(0, doc.getLength());
+                    } catch (BadLocationException ex) {
+                    }
+                }
+            });
+        } catch (BadLocationException ex) {
+            Exceptions.printStackTrace(ex);
+        } finally {
+            rf.unlock();
+        }
+        ec.saveDocument();
+    }
+
+    private void formatDocument2(DataObject jsonFile2) throws IOException {
+        EditorCookie ec2 = jsonFile2.getLookup().lookup(EditorCookie.class);
+        final StyledDocument doc2 = ec2.openDocument();
+        final Reformat rf2 = Reformat.get(doc2);
+        rf2.lock();
+        try {
+            NbDocument.runAtomicAsUser(doc2, new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        rf2.reformat(0, doc2.getLength());
+                    } catch (BadLocationException ex) {
+                    }
+                }
+            });
+        } catch (BadLocationException ex) {
+            Exceptions.printStackTrace(ex);
+        } finally {
+            rf2.unlock();
+        }
+        ec2.saveDocument();
     }
 
 }
