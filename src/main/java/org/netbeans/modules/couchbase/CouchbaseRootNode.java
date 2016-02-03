@@ -50,7 +50,7 @@ public class CouchbaseRootNode extends AbstractNode {
     }
 
     @NbBundle.Messages({
-        "LBL_Title=Couchbase Cluster",
+        "LBL_Title=Couchbase Cluster...",
         "LBL_Text=Enter Cluster Name:"})
     @Override
     public NewType[] getNewTypes() {
