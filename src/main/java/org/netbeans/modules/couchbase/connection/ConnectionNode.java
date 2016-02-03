@@ -8,6 +8,7 @@ import org.netbeans.modules.couchbase.bucket.BucketChildFactory;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.util.Utilities;
+import org.openide.util.lookup.Lookups;
 
 public class ConnectionNode extends AbstractNode {
 
@@ -15,7 +16,7 @@ public class ConnectionNode extends AbstractNode {
     private static final String ICON = "org/netbeans/modules/couchbase/connection.png";
 
     public ConnectionNode(Cluster cluster, String name) {
-        super(Children.create(new BucketChildFactory(cluster), true));
+        super(Children.create(new BucketChildFactory(cluster), true), Lookups.singleton(cluster));
         setDisplayName(name);
         setIconBaseWithExtension(ICON);
     }
