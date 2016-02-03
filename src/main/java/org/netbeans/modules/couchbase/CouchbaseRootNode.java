@@ -40,12 +40,17 @@ public class CouchbaseRootNode extends AbstractNode {
     }
 
     @Override
+    public Action getPreferredAction() {
+        return SystemAction.get(NewAction.class);
+    }
+    
+    @Override
     public Action[] getActions(boolean context) {
         return new Action[]{SystemAction.get(NewAction.class)};
     }
 
     @NbBundle.Messages({
-        "LBL_Title=Cluster",
+        "LBL_Title=Couchbase Cluster",
         "LBL_Text=Enter Cluster Name:"})
     @Override
     public NewType[] getNewTypes() {
