@@ -1,4 +1,5 @@
 Manifest-Version: 1.0
+OpenIDE-Module-Display-Category: Database
 OpenIDE-Module-Layer: org/netbeans/modules/couchbase/layer.xml
 OpenIDE-Module-Localizing-Bundle: org/netbeans/modules/couchbase/Bundle.properties
 OpenIDE-Module-Requires: org.openide.windows.WindowManager
