@@ -151,6 +151,6 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-    <name>Couchbase NoSQL Document Database</name>
+    <name>Couchbase NoSQL Document Database Support</name>
     <description>Provides support in NetBeans IDE for usage of the Couchbase NoSQL Document Database.</description>
 </project>
