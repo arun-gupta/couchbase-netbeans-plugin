@@ -26,7 +26,7 @@ public class ConnectionChildFactory extends ChildFactory.Detachable<Cluster> {
         RefreshConnectionListTrigger.addChangeListener(listener = new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent ev) {
-                String clusterName = NbPreferences.forModule(CouchbaseRootNode.class).get("clusterName", "error!");
+                String clusterName = NbPreferences.forModule(CouchbaseRootNode.class).get("clusterAddress", "error!");
                 Cluster cluster = CouchbaseCluster.create(clusterName);
                 clusters.add(cluster);
                 refresh(true);
@@ -50,7 +50,8 @@ public class ConnectionChildFactory extends ChildFactory.Detachable<Cluster> {
 
     @Override
     protected Node createNodeForKey(Cluster key) {
-        return new ConnectionNode(key, "localhost");
+        String clusterName = NbPreferences.forModule(CouchbaseRootNode.class).get("clusterName", "error!");
+        return new ConnectionNode(key, clusterName);
     }
 
 }

@@ -26,6 +26,7 @@ import org.openide.util.datatransfer.NewType;
 @NbBundle.Messages({"LBL_Connections=Connection"})
 public class CouchbaseRootNode extends AbstractNode {
 
+    private String serverName;
     private String address;
     private String login;
     private String password;
@@ -74,10 +75,12 @@ public class CouchbaseRootNode extends AbstractNode {
                     ok.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent arg0) {
+                            serverName = form.getServerName();
                             address = form.getAddress();
                             login = form.getLogin();
                             password = form.getPassword();
-                            NbPreferences.forModule(CouchbaseRootNode.class).put("clusterName", address);
+                            NbPreferences.forModule(CouchbaseRootNode.class).put("clusterName", serverName);
+                            NbPreferences.forModule(CouchbaseRootNode.class).put("clusterAddress", address);
                             NbPreferences.forModule(CouchbaseRootNode.class).put("clusterLogin", login);
                             NbPreferences.forModule(CouchbaseRootNode.class).put("clusterPassword", password);
                             RefreshConnectionListTrigger.trigger();
