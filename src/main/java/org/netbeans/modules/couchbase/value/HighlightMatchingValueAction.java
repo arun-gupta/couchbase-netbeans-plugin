@@ -34,8 +34,7 @@ public final class HighlightMatchingValueAction implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent ev) {
-        CouchbaseValue cbv = Utilities.actionsGlobalContext().lookup(CouchbaseValue.class);
-        String name = cbv.getName();
+        String name = context.getName();
         CouchBaseRow cbr = context.getCbr();
         String documentTabName = cbr.getBucketName() + "-" + cbr.getI();
         String dtName = documentTabName + ".json";
