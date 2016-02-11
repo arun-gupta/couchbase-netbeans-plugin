@@ -2,6 +2,7 @@ package org.netbeans.modules.couchbase.model;
 
 public class CouchbaseValue {
 
+    private CouchBaseRow cbr;
     private String name;
     private Object value;
     private Type type;
@@ -10,10 +11,19 @@ public class CouchbaseValue {
         LEAF, ARRAY
     };
 
-    public CouchbaseValue(String name, Object value, Type type) {
+    public CouchbaseValue(CouchBaseRow cbr, String name, Object value, Type type) {
+        this.cbr = cbr;
         this.name = name;
         this.value = value;
         this.type = type;
+    }
+
+    public CouchBaseRow getCbr() {
+        return cbr;
+    }
+
+    public void setCbr(CouchBaseRow cbr) {
+        this.cbr = cbr;
     }
 
     public Type getType() {

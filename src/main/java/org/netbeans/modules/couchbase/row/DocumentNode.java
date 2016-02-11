@@ -15,11 +15,9 @@ public class DocumentNode extends BeanNode<CouchBaseRow> {
 
     @StaticResource
     private static final String ICON = "org/netbeans/modules/couchbase/collection.png";
-    private final CouchBaseRow cbr;
 
     public DocumentNode(CouchBaseRow cbr) throws IntrospectionException {
-        super(cbr, Children.create(new LeafValueChildFactory(cbr.getRow()), true), Lookups.singleton(cbr));
-        this.cbr = cbr;
+        super(cbr, Children.create(new LeafValueChildFactory(cbr), true), Lookups.singleton(cbr));
         setDisplayName(String.valueOf(cbr.getI()));
         setIconBaseWithExtension(ICON);
     }
