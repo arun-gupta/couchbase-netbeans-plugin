@@ -21,14 +21,8 @@ import org.openide.util.NbPreferences;
 @ActionRegistration(
         displayName = "#CTL_PropertiesAction"
 )
-@Messages("CTL_PropertiesAction=Properties")
+@Messages("CTL_PropertiesAction=Server Defaults")
 public final class PropertiesAction implements ActionListener {
-
-    private final Cluster context;
-
-    public PropertiesAction(Cluster context) {
-        this.context = context;
-    }
 
     @Override
     public void actionPerformed(ActionEvent ev) {
