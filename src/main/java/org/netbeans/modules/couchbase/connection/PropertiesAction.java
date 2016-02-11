@@ -32,7 +32,7 @@ public final class PropertiesAction implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent ev) {
-        Preferences pref = NbPreferences.forModule(CouchbaseRootNode.class);
+        Preferences pref = NbPreferences.forModule(ConnectionNode.class);
         String clusterName = pref.get("clusterName", "error!");
         String clusterDefaultNumber = pref.get(clusterName + "-defaultNumber", "3");
         NotifyDescriptor.InputLine line

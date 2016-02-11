@@ -17,18 +17,21 @@ import org.openide.nodes.Node;
 import org.openide.util.Exceptions;
 import org.openide.util.NbPreferences;
 import static com.couchbase.client.java.query.Select.select;
+import org.netbeans.modules.couchbase.connection.ConnectionNode;
 
 public class DocumentChildFactory extends ChildFactory<CouchBaseRow> implements PreferenceChangeListener {
 
     private final Bucket bucket;
     private final String bucketName;
-    private final Preferences pref = NbPreferences.forModule(BucketNode.class);
+    private final Preferences connectionNodePref = NbPreferences.forModule(ConnectionNode.class);
+    private final Preferences bucketNodePref = NbPreferences.forModule(BucketNode.class);
     private N1qlQuery query;
 
     public DocumentChildFactory(Bucket bean) {
         this.bucket = bean;
         this.bucketName = bucket.name();
-        this.pref.addPreferenceChangeListener(this);
+        this.connectionNodePref.addPreferenceChangeListener(this);
+        this.bucketNodePref.addPreferenceChangeListener(this);
         this.query = N1qlQuery
                     .simple(select("*")
                             .from(i(bucket.name()))
@@ -63,16 +66,18 @@ public class DocumentChildFactory extends ChildFactory<CouchBaseRow> implements 
 
     @Override
     public void preferenceChange(PreferenceChangeEvent evt) {
-        int numberOfRows = Integer.parseInt(pref.get(bucket.name() + "-numberOfRows", "3"));
-        if (evt.getKey().startsWith(bucket.name() + "-numberOfRows")) {
+        String clusterName = connectionNodePref.get("clusterName", "error!");
+        String clusterDefaultNumber = connectionNodePref.get(clusterName + "-defaultNumber", "3");
+        int numberOfRows = Integer.parseInt(bucketNodePref.get(bucket.name() + "-numberOfRows", clusterDefaultNumber));
+        if (evt.getKey().startsWith(bucket.name() + "-numberOfRows") || evt.getKey().startsWith(clusterName)) {
             query = N1qlQuery
                     .simple(select("*")
                             .from(i(bucket.name()))
                             .limit(numberOfRows));
             refresh(true);
         } else if (evt.getKey().startsWith(bucket.name() + "-where") || evt.getKey().startsWith(bucket.name() + "-equals")) {
-            String where = pref.get(bucket.name() + "-where", "-");
-            String equals = pref.get(bucket.name() + "-equals", "-");
+            String where = bucketNodePref.get(bucket.name() + "-where", "-");
+            String equals = bucketNodePref.get(bucket.name() + "-equals", "-");
             query = N1qlQuery
                     .simple(select("*")
                             .from(i(bucket.name()))
