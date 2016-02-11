@@ -3,6 +3,10 @@
 <filesystem>
     <folder name="Actions">
         <folder name="Bucket">
+            <file name="org-netbeans-modules-couchbase-bucket-queries-NoOfDisplayedDocumentsQuery-separatorBefore.instance">
+                <attr name="instanceCreate" newvalue="javax.swing.JSeparator"/>
+                <attr intvalue="50" name="position"/>
+            </file>
             <file name="org-netbeans-modules-couchbase-bucket-queries-NoOfDisplayedDocumentsQuery.instance">
                 <attr methodvalue="org.openide.awt.Actions.context" name="instanceCreate"/>
                 <attr name="type" stringvalue="com.couchbase.client.java.Bucket"/>
@@ -10,6 +14,7 @@
                 <attr name="injectable" stringvalue="org.netbeans.modules.couchbase.bucket.queries.NoOfDisplayedDocumentsQuery"/>
                 <attr name="selectionType" stringvalue="EXACTLY_ONE"/>
                 <attr name="displayName" stringvalue="Query: No. of Displayed Documents"/>
+                <attr intvalue="60" name="position"/>
             </file>
             <file name="org-netbeans-modules-couchbase-bucket-queries-WhereDisplayedDocumentsQuery.instance">
                 <attr methodvalue="org.openide.awt.Actions.context" name="instanceCreate"/>
@@ -18,6 +23,7 @@
                 <attr name="injectable" stringvalue="org.netbeans.modules.couchbase.bucket.queries.WhereDisplayedDocumentsQuery"/>
                 <attr name="selectionType" stringvalue="EXACTLY_ONE"/>
                 <attr name="displayName" stringvalue="Query: Where.../From..."/>
+                <attr intvalue="70" name="position"/>
             </file>
         </folder>
     </folder>
