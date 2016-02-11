@@ -1,13 +1,18 @@
 package org.netbeans.modules.couchbase.connection;
 
 import com.couchbase.client.java.Cluster;
+import com.couchbase.client.java.cluster.ClusterManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.prefs.Preferences;
+import org.netbeans.modules.couchbase.CouchbaseRootNode;
+import org.netbeans.modules.couchbase.bucket.BucketNode;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
+import org.openide.util.NbPreferences;
 
 @ActionID(
         category = "Connection",
@@ -27,12 +32,20 @@ public final class PropertiesAction implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent ev) {
-        NotifyDescriptor.InputLine line = 
-                new NotifyDescriptor.InputLine(
+        Preferences pref = NbPreferences.forModule(CouchbaseRootNode.class);
+        String clusterName = pref.get("clusterName", "error!");
+        String clusterDefaultNumber = pref.get(clusterName + "-defaultNumber", "3");
+        NotifyDescriptor.InputLine line
+                = new NotifyDescriptor.InputLine(
                         "Default Number of Documents:",
                         "Server-Level Setting"
                 );
-        DialogDisplayer.getDefault().notify(line);
+        line.setInputText(clusterDefaultNumber);
+        Object result = DialogDisplayer.getDefault().notify(line);
+        if (NotifyDescriptor.YES_OPTION.equals(result)) {
+            String inputText = line.getInputText();
+            pref.putInt(clusterName + "-defaultNumber", Integer.parseInt(inputText));
+        }
     }
-    
+
 }
