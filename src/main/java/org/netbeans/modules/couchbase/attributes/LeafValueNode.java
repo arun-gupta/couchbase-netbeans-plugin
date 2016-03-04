@@ -1,24 +1,24 @@
-package org.netbeans.modules.couchbase.value;
+package org.netbeans.modules.couchbase.attributes;
 
-import org.netbeans.modules.couchbase.model.CouchbaseValue;
+import org.netbeans.modules.couchbase.model.CouchbaseAttribute;
 import java.beans.IntrospectionException;
 import java.util.List;
 import javax.swing.Action;
 import org.netbeans.api.annotations.common.StaticResource;
-import org.netbeans.modules.couchbase.model.CouchbaseValue.Type;
+import org.netbeans.modules.couchbase.model.CouchbaseAttribute.Type;
 import org.openide.nodes.BeanNode;
 import org.openide.nodes.Children;
 import org.openide.util.Utilities;
 import org.openide.util.lookup.Lookups;
 
-public class LeafValueNode extends BeanNode<CouchbaseValue> {
+public class LeafValueNode extends BeanNode<CouchbaseAttribute> {
 
     @StaticResource
     private static final String ICON = "org/netbeans/modules/couchbase/key.png";
 
-    private final CouchbaseValue cd;
+    private final CouchbaseAttribute cd;
 
-    public LeafValueNode(CouchbaseValue cd) throws IntrospectionException {
+    public LeafValueNode(CouchbaseAttribute cd) throws IntrospectionException {
         super(cd, Children.createLazy(new LeafOrArrayCallable(cd)), Lookups.singleton(cd));
         this.cd = cd;
         if (cd.getType() == Type.ARRAY) {

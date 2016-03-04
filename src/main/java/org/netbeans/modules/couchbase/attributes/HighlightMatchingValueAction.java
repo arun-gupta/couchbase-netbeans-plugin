@@ -1,11 +1,11 @@
-package org.netbeans.modules.couchbase.value;
+package org.netbeans.modules.couchbase.attributes;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.Set;
-import org.netbeans.modules.couchbase.model.CouchBaseRow;
-import org.netbeans.modules.couchbase.model.CouchbaseValue;
+import org.netbeans.modules.couchbase.model.CouchbaseDocument;
+import org.netbeans.modules.couchbase.model.CouchbaseAttribute;
 import org.openide.loaders.DataObject;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionRegistration;
@@ -26,16 +26,16 @@ import org.openide.windows.WindowManager;
 @Messages("CTL_HighlightMatchingValueAction=Highlight Matching Value")
 public final class HighlightMatchingValueAction implements ActionListener {
 
-    private final CouchbaseValue context;
+    private final CouchbaseAttribute context;
 
-    public HighlightMatchingValueAction(CouchbaseValue context) {
+    public HighlightMatchingValueAction(CouchbaseAttribute context) {
         this.context = context;
     }
 
     @Override
     public void actionPerformed(ActionEvent ev) {
         String name = context.getName();
-        CouchBaseRow cbr = context.getCbr();
+        CouchbaseDocument cbr = context.getCbr();
         String documentTabName = cbr.getBucketName() + "-" + cbr.getI();
         String dtName = documentTabName + ".json";
         DataObject dobj = findDataObject(dtName);

@@ -1,4 +1,4 @@
-package org.netbeans.modules.couchbase.row;
+package org.netbeans.modules.couchbase.document;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -15,7 +15,7 @@ import javax.swing.text.StyledDocument;
 import org.netbeans.api.diff.Diff;
 import org.netbeans.api.diff.DiffView;
 import org.netbeans.api.diff.StreamSource;
-import org.netbeans.modules.couchbase.model.CouchBaseRow;
+import org.netbeans.modules.couchbase.model.CouchbaseDocument;
 import org.netbeans.modules.editor.indent.api.Reformat;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionRegistration;
@@ -41,9 +41,9 @@ import org.openide.windows.TopComponent;
 @Messages("CTL_CompareDocumentAction=Compare Documents")
 public final class CompareDocumentAction implements ActionListener {
 
-    private final List<CouchBaseRow> context;
+    private final List<CouchbaseDocument> context;
 
-    public CompareDocumentAction(List<CouchBaseRow> context) {
+    public CompareDocumentAction(List<CouchbaseDocument> context) {
         this.context = context;
     }
 
@@ -51,8 +51,8 @@ public final class CompareDocumentAction implements ActionListener {
     public void actionPerformed(ActionEvent ev) {
         FileObject obj1 = null;
         FileObject obj2 = null;
-        CouchBaseRow cbr = context.get(0);
-        CouchBaseRow cbr2 = context.get(1);
+        CouchbaseDocument cbr = context.get(0);
+        CouchbaseDocument cbr2 = context.get(1);
         try {
             String templateName = "Templates/Other/json.json";
             String fileName = cbr.getBucketName() + "-" + cbr.getI();

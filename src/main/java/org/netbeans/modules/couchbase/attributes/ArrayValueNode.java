@@ -1,4 +1,4 @@
-package org.netbeans.modules.couchbase.value;
+package org.netbeans.modules.couchbase.attributes;
 
 import java.beans.IntrospectionException;
 import javax.swing.Action;

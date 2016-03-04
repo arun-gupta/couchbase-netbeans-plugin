@@ -1,21 +1,21 @@
-package org.netbeans.modules.couchbase.value;
+package org.netbeans.modules.couchbase.attributes;
 
-import org.netbeans.modules.couchbase.model.CouchbaseValue;
+import org.netbeans.modules.couchbase.model.CouchbaseAttribute;
 import com.couchbase.client.java.document.json.JsonObject;
 import com.couchbase.client.java.transcoder.JsonTranscoder;
 import java.beans.IntrospectionException;
 import java.util.List;
 import java.util.Set;
-import org.netbeans.modules.couchbase.model.CouchbaseValue.Type;
+import org.netbeans.modules.couchbase.model.CouchbaseAttribute.Type;
 import org.openide.nodes.ChildFactory;
 import org.openide.nodes.Node;
 import org.openide.util.Exceptions;
 
 public class ArrayValueChildFactory extends ChildFactory<String> {
 
-    private final CouchbaseValue cd;
+    private final CouchbaseAttribute cd;
 
-    public ArrayValueChildFactory(CouchbaseValue cd) {
+    public ArrayValueChildFactory(CouchbaseAttribute cd) {
         this.cd = cd;
     }
 

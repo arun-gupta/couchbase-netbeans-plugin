@@ -1,16 +1,16 @@
-package org.netbeans.modules.couchbase.value;
+package org.netbeans.modules.couchbase.attributes;
 
 import java.util.concurrent.Callable;
-import org.netbeans.modules.couchbase.model.CouchbaseValue;
-import org.netbeans.modules.couchbase.model.CouchbaseValue.Type;
-import org.netbeans.modules.couchbase.value.ArrayValueChildFactory;
+import org.netbeans.modules.couchbase.model.CouchbaseAttribute;
+import org.netbeans.modules.couchbase.model.CouchbaseAttribute.Type;
+import org.netbeans.modules.couchbase.attributes.ArrayValueChildFactory;
 import org.openide.nodes.Children;
 
 public class LeafOrArrayCallable implements Callable<Children> {
 
-    private final CouchbaseValue key;
+    private final CouchbaseAttribute key;
 
-    public LeafOrArrayCallable(CouchbaseValue key) {
+    public LeafOrArrayCallable(CouchbaseAttribute key) {
         this.key = key;
     }
 

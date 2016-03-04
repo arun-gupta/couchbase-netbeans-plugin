@@ -1,4 +1,4 @@
-package org.netbeans.modules.couchbase.row;
+package org.netbeans.modules.couchbase.document;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,7 +10,7 @@ import java.util.List;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.StyledDocument;
 import org.netbeans.api.actions.Openable;
-import org.netbeans.modules.couchbase.model.CouchBaseRow;
+import org.netbeans.modules.couchbase.model.CouchbaseDocument;
 import org.netbeans.modules.editor.indent.api.Reformat;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionRegistration;
@@ -35,15 +35,15 @@ import org.openide.util.NbBundle.Messages;
 @Messages("CTL_OpenDocumentAction=Open Document")
 public final class OpenDocumentAction implements ActionListener {
 
-    private final List<CouchBaseRow> context;
+    private final List<CouchbaseDocument> context;
 
-    public OpenDocumentAction(List<CouchBaseRow> context) {
+    public OpenDocumentAction(List<CouchbaseDocument> context) {
         this.context = context;
     }
 
     @Override
     public void actionPerformed(ActionEvent ev) {
-        for (CouchBaseRow cbr : context) {
+        for (CouchbaseDocument cbr : context) {
             try {
                 String templateName = "Templates/Other/json.json";
                 String fileName = cbr.getBucketName() + "-" + cbr.getI();

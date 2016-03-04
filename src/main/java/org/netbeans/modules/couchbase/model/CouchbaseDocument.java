@@ -2,13 +2,13 @@ package org.netbeans.modules.couchbase.model;
 
 import com.couchbase.client.java.query.N1qlQueryRow;
 
-public class CouchBaseRow {
+public class CouchbaseDocument {
 
     String bucketName;
     int i;
     N1qlQueryRow row;
 
-    public CouchBaseRow(String bucketName, int i, N1qlQueryRow row) {
+    public CouchbaseDocument(String bucketName, int i, N1qlQueryRow row) {
         this.bucketName = bucketName;
         this.i = i;
         this.row = row;

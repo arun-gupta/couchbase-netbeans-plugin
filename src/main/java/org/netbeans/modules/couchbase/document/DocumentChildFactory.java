@@ -1,4 +1,4 @@
-package org.netbeans.modules.couchbase.row;
+package org.netbeans.modules.couchbase.document;
 
 import com.couchbase.client.java.Bucket;
 import com.couchbase.client.java.query.N1qlQuery;
@@ -11,15 +11,18 @@ import java.util.prefs.PreferenceChangeEvent;
 import java.util.prefs.PreferenceChangeListener;
 import java.util.prefs.Preferences;
 import org.netbeans.modules.couchbase.bucket.BucketNode;
-import org.netbeans.modules.couchbase.model.CouchBaseRow;
+import org.netbeans.modules.couchbase.model.CouchbaseDocument;
 import org.openide.nodes.ChildFactory;
 import org.openide.nodes.Node;
 import org.openide.util.Exceptions;
 import org.openide.util.NbPreferences;
 import static com.couchbase.client.java.query.Select.select;
 import org.netbeans.modules.couchbase.connection.ConnectionNode;
+import static com.couchbase.client.java.query.Select.select;
+import static com.couchbase.client.java.query.Select.select;
+import static com.couchbase.client.java.query.Select.select;
 
-public class DocumentChildFactory extends ChildFactory<CouchBaseRow> implements PreferenceChangeListener {
+public class DocumentChildFactory extends ChildFactory<CouchbaseDocument> implements PreferenceChangeListener {
 
     private final Bucket bucket;
     private final String bucketName;
@@ -40,7 +43,7 @@ public class DocumentChildFactory extends ChildFactory<CouchBaseRow> implements 
 
     //http://developer.couchbase.com/documentation/server/4.0/getting-started/first-n1ql-query.html
     @Override
-    protected boolean createKeys(List<CouchBaseRow> list) {
+    protected boolean createKeys(List<CouchbaseDocument> list) {
         //Force indexing:
         bucket.query(N1qlQuery.simple(String.format("create primary index on `%s`", bucket.name())));
         //Run query:
@@ -48,13 +51,13 @@ public class DocumentChildFactory extends ChildFactory<CouchBaseRow> implements 
         List<N1qlQueryRow> rowsOfFindingLimitedDocumentsInBucket = resultOfFindingLimitedDocumentsInBucket.allRows();
         for (int i = 0; i < rowsOfFindingLimitedDocumentsInBucket.size(); i++) {
             N1qlQueryRow row = rowsOfFindingLimitedDocumentsInBucket.get(i);
-            list.add(new CouchBaseRow(bucketName, i + 1, row));
+            list.add(new CouchbaseDocument(bucketName, i + 1, row));
         }
         return true;
     }
 
     @Override
-    protected Node createNodeForKey(CouchBaseRow key) {
+    protected Node createNodeForKey(CouchbaseDocument key) {
         DocumentNode rn = null;
         try {
             rn = new DocumentNode(key);

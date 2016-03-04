@@ -1,34 +1,34 @@
-package org.netbeans.modules.couchbase.value;
+package org.netbeans.modules.couchbase.attributes;
 
-import org.netbeans.modules.couchbase.model.CouchbaseValue;
+import org.netbeans.modules.couchbase.model.CouchbaseAttribute;
 import com.couchbase.client.java.document.json.JsonObject;
 import com.couchbase.client.java.query.N1qlQueryRow;
 import java.beans.IntrospectionException;
 import java.util.List;
 import java.util.Set;
-import org.netbeans.modules.couchbase.model.CouchBaseRow;
-import org.netbeans.modules.couchbase.model.CouchbaseValue.Type;
+import org.netbeans.modules.couchbase.model.CouchbaseDocument;
+import org.netbeans.modules.couchbase.model.CouchbaseAttribute.Type;
 import org.openide.nodes.ChildFactory;
 import org.openide.nodes.Node;
 import org.openide.util.Exceptions;
 
-public class LeafValueChildFactory extends ChildFactory<CouchbaseValue> {
+public class LeafValueChildFactory extends ChildFactory<CouchbaseAttribute> {
 
-    private final CouchBaseRow cbr;
+    private final CouchbaseDocument cbr;
 
-    public LeafValueChildFactory(CouchBaseRow row) {
+    public LeafValueChildFactory(CouchbaseDocument row) {
         this.cbr = row;
     }
 
     @Override
-    protected boolean createKeys(List<CouchbaseValue> list) {
+    protected boolean createKeys(List<CouchbaseAttribute> list) {
         JsonObject json = JsonObject.fromJson(cbr.getRow().toString());
         Set<String> topNames = json.getNames();
         parseNames(topNames, json, list);
         return true;
     }
 
-    private void parseNames(Set<String> topNames, JsonObject json, List<CouchbaseValue> list) {
+    private void parseNames(Set<String> topNames, JsonObject json, List<CouchbaseAttribute> list) {
         for (String topName : topNames) {
             JsonObject firstLevel = json.getObject(topName);
             if (firstLevel != null) {
@@ -39,9 +39,9 @@ public class LeafValueChildFactory extends ChildFactory<CouchbaseValue> {
                         String simpleName = value.getClass().getSimpleName();
                         if (simpleName != null) {
                             if (simpleName.equals("JsonObject")) {
-                                list.add(new CouchbaseValue(cbr, name, value, Type.ARRAY));
+                                list.add(new CouchbaseAttribute(cbr, name, value, Type.ARRAY));
                             } else {
-                                list.add(new CouchbaseValue(cbr, name, value, Type.LEAF));
+                                list.add(new CouchbaseAttribute(cbr, name, value, Type.LEAF));
                             }
                         }
                     }
@@ -51,7 +51,7 @@ public class LeafValueChildFactory extends ChildFactory<CouchbaseValue> {
     }
 
     @Override
-    protected Node createNodeForKey(CouchbaseValue key) {
+    protected Node createNodeForKey(CouchbaseAttribute key) {
         LeafValueNode vn = null;
         try {
             vn = new LeafValueNode(key);

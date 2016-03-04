@@ -1,8 +1,8 @@
 package org.netbeans.modules.couchbase.model;
 
-public class CouchbaseValue {
+public class CouchbaseAttribute {
 
-    private CouchBaseRow cbr;
+    private CouchbaseDocument cbr;
     private String name;
     private Object value;
     private Type type;
@@ -11,18 +11,18 @@ public class CouchbaseValue {
         LEAF, ARRAY
     };
 
-    public CouchbaseValue(CouchBaseRow cbr, String name, Object value, Type type) {
+    public CouchbaseAttribute(CouchbaseDocument cbr, String name, Object value, Type type) {
         this.cbr = cbr;
         this.name = name;
         this.value = value;
         this.type = type;
     }
 
-    public CouchBaseRow getCbr() {
+    public CouchbaseDocument getCbr() {
         return cbr;
     }
 
-    public void setCbr(CouchBaseRow cbr) {
+    public void setCbr(CouchbaseDocument cbr) {
         this.cbr = cbr;
     }
 

@@ -1,7 +1,7 @@
 package org.netbeans.modules.couchbase.bucket;
 
 import com.couchbase.client.java.Bucket;
-import org.netbeans.modules.couchbase.row.DocumentChildFactory;
+import org.netbeans.modules.couchbase.document.DocumentChildFactory;
 import com.couchbase.client.java.query.N1qlQuery;
 import com.couchbase.client.java.query.N1qlQueryResult;
 import static com.couchbase.client.java.query.dsl.Expression.i;
