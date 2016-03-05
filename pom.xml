@@ -12,6 +12,16 @@
                 <artifactId>nbm-maven-plugin</artifactId>
                 <version>3.13</version>
                 <extensions>true</extensions>
+                <configuration>
+                    <verifyRuntime>warn</verifyRuntime>
+                    <moduleDependencies>
+                        <dependency>
+                            <id>org.netbeans.modules:org.netbeans.modules.db.dataview</id>
+                            <type>impl</type>
+                            <!--<explicitValue>NetBeans-119-on-20130615</explicitValue>-->
+                        </dependency>
+                    </moduleDependencies>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -146,6 +156,17 @@
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-actions</artifactId>
             <version>RELEASE81</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-modules-db</artifactId>
+            <version>RELEASE81</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.modules</groupId>
+            <artifactId>org-netbeans-modules-db-dataview</artifactId>
+            <version>RELEASE81</version>
+            <type>jar</type>
         </dependency>
     </dependencies>
     <properties>
