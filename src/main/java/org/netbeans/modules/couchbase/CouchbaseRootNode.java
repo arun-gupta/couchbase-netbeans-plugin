@@ -7,7 +7,6 @@ import java.io.IOException;
 import javax.swing.Action;
 import javax.swing.JButton;
 import org.netbeans.api.annotations.common.StaticResource;
-import org.netbeans.api.core.ide.ServicesTabNodeRegistration;
 import org.netbeans.modules.couchbase.connection.RefreshConnectionListTrigger;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
@@ -19,11 +18,7 @@ import org.openide.util.NbPreferences;
 import org.openide.util.actions.SystemAction;
 import org.openide.util.datatransfer.NewType;
 
-@ServicesTabNodeRegistration(
-        name = "Couchbase",
-        displayName = "Couchbase",
-        iconResource = "org/netbeans/modules/couchbase/couchbase-root-icon.png")
-@NbBundle.Messages({"LBL_Connections=Connection"})
+@NbBundle.Messages({"LBL_Connections=Couchbase"})
 public class CouchbaseRootNode extends AbstractNode {
 
     private String serverName;
@@ -31,12 +26,18 @@ public class CouchbaseRootNode extends AbstractNode {
     private String login;
     private String password;
 
+    private static final CouchbaseRootNode DEFAULT = new CouchbaseRootNode();
+    
     @StaticResource
     private static final String ICON = "org/netbeans/modules/couchbase/couchbase-root-icon.png";
 
+     public static CouchbaseRootNode getDefault() {
+        return DEFAULT;
+    }
+    
     public CouchbaseRootNode() {
         super(Children.create(new ConnectionChildFactory(), true));
-        setDisplayName("Couchbase");
+        setDisplayName(Bundle.LBL_Connections());
         setIconBaseWithExtension(ICON);
     }
 
