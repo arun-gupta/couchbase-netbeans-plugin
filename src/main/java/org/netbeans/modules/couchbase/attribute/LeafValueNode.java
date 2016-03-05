@@ -1,4 +1,4 @@
-package org.netbeans.modules.couchbase.attributes;
+package org.netbeans.modules.couchbase.attribute;
 
 import org.netbeans.modules.couchbase.model.CouchbaseAttribute;
 import java.beans.IntrospectionException;

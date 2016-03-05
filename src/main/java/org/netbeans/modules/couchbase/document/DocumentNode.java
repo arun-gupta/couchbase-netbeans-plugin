@@ -5,7 +5,7 @@ import java.util.List;
 import javax.swing.Action;
 import org.netbeans.api.annotations.common.StaticResource;
 import org.netbeans.modules.couchbase.model.CouchbaseDocument;
-import org.netbeans.modules.couchbase.attributes.LeafValueChildFactory;
+import org.netbeans.modules.couchbase.attribute.LeafValueChildFactory;
 import org.openide.nodes.BeanNode;
 import org.openide.nodes.Children;
 import org.openide.util.Utilities;

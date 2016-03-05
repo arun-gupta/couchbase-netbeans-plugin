@@ -1,4 +1,4 @@
-package org.netbeans.modules.couchbase.attributes;
+package org.netbeans.modules.couchbase.attribute;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
