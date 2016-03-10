@@ -4,6 +4,8 @@ import com.couchbase.client.java.Bucket;
 import com.couchbase.client.java.Cluster;
 import com.couchbase.client.java.cluster.BucketSettings;
 import com.couchbase.client.java.cluster.ClusterManager;
+import com.couchbase.client.java.query.N1qlQuery;
+import com.couchbase.client.java.query.N1qlQueryResult;
 import java.beans.IntrospectionException;
 import java.util.List;
 import javax.swing.event.ChangeEvent;
@@ -48,10 +50,15 @@ public class BucketChildFactory extends ChildFactory.Detachable<Bucket> {
         String password = NbPreferences.forModule(CouchbaseRootNode.class).get("clusterPassword", "error!");
         ClusterManager cmgr = cluster.clusterManager(login, password);
         for (BucketSettings bs : cmgr.getBuckets()) {
-            String bucketName = bs.name();
-            if (!bucketName.equals("default")) {
-                list.add(cluster.openBucket(bs.name()));
-            }
+            Bucket bucket = cluster.openBucket(bs.name());
+            //“select count(*)  from system:indexes where keyspace_id = `” + bucket.name() + “`“
+            //bucket.query(N1qlQuery.simple(String.format("create primary index on `%s`", bucket.name())));
+           
+            
+//            String bucketName = bs.name();
+//            if (!bucketName.equals("default")) {
+                list.add(bucket);
+//            }
         }
         return true;
     }
