@@ -45,6 +45,8 @@ public class DocumentChildFactory extends ChildFactory<CouchbaseDocument> implem
     @Override
     protected boolean createKeys(List<CouchbaseDocument> list) {
         //Force indexing:
+        //bucket.query(N1qlQuery.simple(String.format("select * from system:indexes where keyspace_id = '" + bucket.name() + "'", bucket.name())));
+//        bucket.query(N1qlQuery.simple(String.format("create primary index on '" + bucket.name() + "'", bucket.name())));
 //        bucket.query(N1qlQuery.simple(String.format("create primary index on `%s`", bucket.name())));
         //Run query:
         N1qlQueryResult resultOfFindingLimitedDocumentsInBucket = bucket.query(query);
