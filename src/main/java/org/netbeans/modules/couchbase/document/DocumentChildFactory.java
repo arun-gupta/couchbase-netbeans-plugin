@@ -16,14 +16,15 @@ import org.openide.nodes.ChildFactory;
 import org.openide.nodes.Node;
 import org.openide.util.Exceptions;
 import org.openide.util.NbPreferences;
-import static com.couchbase.client.java.query.Select.select;
 import org.netbeans.modules.couchbase.connection.ConnectionNode;
 import static com.couchbase.client.java.query.Select.select;
-import static com.couchbase.client.java.query.Select.select;
-import static com.couchbase.client.java.query.Select.select;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import org.netbeans.modules.couchbase.bucket.RefreshBucketListTrigger;
 
-public class DocumentChildFactory extends ChildFactory<CouchbaseDocument> implements PreferenceChangeListener {
+public class DocumentChildFactory extends ChildFactory.Detachable<CouchbaseDocument> implements PreferenceChangeListener {
 
+    private ChangeListener listener;
     private final Bucket bucket;
     private final String bucketName;
     private final Preferences connectionNodePref = NbPreferences.forModule(ConnectionNode.class);
@@ -39,6 +40,24 @@ public class DocumentChildFactory extends ChildFactory<CouchbaseDocument> implem
                     .simple(select("*")
                             .from(i(bucket.name()))
                             .limit(3));
+    }
+    
+    @Override
+    protected void addNotify() {
+        RefreshBucketListTrigger.addChangeListener(listener = new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent ev) {
+                refresh(true);
+            }
+        });
+    }
+
+    @Override
+    protected void removeNotify() {
+        if (listener != null) {
+            RefreshBucketListTrigger.removeChangeListener(listener);
+            listener = null;
+        }
     }
 
     //http://developer.couchbase.com/documentation/server/4.0/getting-started/first-n1ql-query.html

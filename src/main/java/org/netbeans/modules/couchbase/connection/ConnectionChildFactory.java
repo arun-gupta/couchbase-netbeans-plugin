@@ -2,6 +2,8 @@ package org.netbeans.modules.couchbase.connection;
 
 import com.couchbase.client.java.Cluster;
 import com.couchbase.client.java.CouchbaseCluster;
+import com.couchbase.client.java.env.CouchbaseEnvironment;
+import com.couchbase.client.java.env.DefaultCouchbaseEnvironment;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.event.ChangeEvent;
@@ -27,9 +29,14 @@ public class ConnectionChildFactory extends ChildFactory.Detachable<Cluster> {
             @Override
             public void stateChanged(ChangeEvent ev) {
                 String clusterName = NbPreferences.forModule(CouchbaseRootNode.class).get("clusterAddress", "error!");
-                Cluster cluster = CouchbaseCluster.create(clusterName);
+                CouchbaseEnvironment env = DefaultCouchbaseEnvironment.builder()
+                        .connectTimeout(60000) //default is 5s
+                        .build();
+                System.out.println("Create connection");
+                //use the env during cluster creation to apply
+                Cluster cluster = CouchbaseCluster.create(env, clusterName);
                 clusters.add(cluster);
-                refresh(true);
+                refresh(false);
             }
         });
     }
