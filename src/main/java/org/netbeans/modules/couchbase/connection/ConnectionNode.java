@@ -8,6 +8,7 @@ import java.io.IOException;
 import javax.swing.Action;
 import javax.swing.JOptionPane;
 import org.netbeans.api.annotations.common.StaticResource;
+import org.netbeans.api.progress.ProgressUtils;
 import org.netbeans.modules.couchbase.CouchbaseRootNode;
 import org.netbeans.modules.couchbase.bucket.BucketChildFactory;
 import org.netbeans.modules.couchbase.bucket.RefreshBucketListTrigger;
@@ -73,13 +74,14 @@ public class ConnectionNode extends AbstractNode {
                     String password = NbPreferences.forModule(CouchbaseRootNode.class).get("clusterPassword", "error!");
                     final ClusterManager cmgr = cluster.clusterManager(login, password);
                     try {
-                        System.out.println("status: one");
-                        cmgr.insertBucket(settings);
-                        System.out.println("status: two");
-                        NbPreferences.forModule(ConnectionNode.class).put("bucketName", bucketName);
-                        System.out.println("status: three");
-                        RefreshBucketListTrigger.trigger();
-                        System.out.println("status: four");
+                        ProgressUtils.showProgressDialogAndRun(new Runnable() {
+                            @Override
+                            public void run() {
+                                cmgr.insertBucket(settings);
+                                NbPreferences.forModule(ConnectionNode.class).put("bucketName", bucketName);
+                                RefreshBucketListTrigger.trigger();
+                            }
+                        }, "Create bucket " + bucketName + "...");
                     } catch (com.couchbase.client.core.CouchbaseException f) {
                         JOptionPane.showMessageDialog(null, f.getMessage());
                     }
