@@ -1,6 +1,6 @@
 package org.netbeans.modules.couchbase.connection.rename;
 
-import com.couchbase.client.java.Cluster;
+//import com.couchbase.client.java.Cluster;
 import java.awt.Dialog;
 import java.util.logging.Logger;
 import javax.swing.JButton;
@@ -16,8 +16,6 @@ import org.openide.util.RequestProcessor;
 import org.openide.util.actions.NodeAction;
 
 public class RenameContainerAction extends NodeAction {
-
-    private static final Logger LOGGER = Logger.getLogger(RenameContainerAction.class.getName());
 
     @NbBundle.Messages({
         "LBL_Rename=&Rename",
@@ -83,7 +81,7 @@ public class RenameContainerAction extends NodeAction {
         if (activatedNodes.length != 1) {
             return false;
         }
-        return activatedNodes[0].getLookup().lookup(Cluster.class) != null;
+        return true;//activatedNodes[0].getLookup().lookup(Cluster.class) != null;
     }
 
     @NbBundle.Messages("LBL_RenameContainerAction=Rename...")

@@ -13,6 +13,7 @@ import org.openide.nodes.Children;
 import static com.couchbase.client.java.query.Select.select;
 import java.awt.Image;
 import java.io.IOException;
+import org.netbeans.modules.couchbase.connection.rename.RenameContainerAction;
 import org.openide.actions.DeleteAction;
 import org.openide.actions.OpenLocalExplorerAction;
 import org.openide.util.ImageUtilities;
@@ -31,7 +32,6 @@ public class BucketNode extends BeanNode<Bucket> {
     @StaticResource
     private static final String UNINDEXED = BASE_ICON_PATH + "bucket/unindexed_icon.png";
     private final Bucket bucket;
-    private String oldDisplayName;
 
     public BucketNode(Bucket bean) throws IntrospectionException {
         this(bean, new InstanceContent());
@@ -42,31 +42,31 @@ public class BucketNode extends BeanNode<Bucket> {
         ic.add(bean);
         ic.add(this);
         this.bucket = bean;
-        oldDisplayName = getDisplayName();
+        setDisplayName(bean.name());
     }
 
-    private String getCurrentName() {
-        N1qlQuery all = N1qlQuery.simple(select("*").from(i(bucket.name())));
-        N1qlQueryResult result = bucket.query(all);
-        return bucket.name() + " (" + result.allRows().size() + ")";
-    }
-
-    @Override
-    public String getDisplayName() {
-        return getCurrentName();
-    }
-
-    @Override
-    public String getShortDescription() {
-        N1qlQueryResult query = bucket.query(N1qlQuery.simple(String.format("select * from system:indexes where keyspace_id = '" + bucket.name() + "'", bucket.name())));
-        int size = query.allRows().size();
-        if (size > 0) {
-            return "Indexed!";
-        } else {
-            return "Not Indexed Yet!";
-        }
-    }
-
+//    private String getCurrentName() {
+//        N1qlQuery all = N1qlQuery.simple(select("*").from(i(bucket.name())));
+//        N1qlQueryResult result = bucket.query(all);
+//        return bucket.name() + " (" + result.allRows().size() + ")";
+//    }
+//
+//    @Override
+//    public String getDisplayName() {
+//        return getCurrentName();
+//    }
+//
+//    @Override
+//    public String getShortDescription() {
+//        N1qlQueryResult query = bucket.query(N1qlQuery.simple(String.format("select * from system:indexes where keyspace_id = '" + bucket.name() + "'", bucket.name())));
+//        int size = query.allRows().size();
+//        if (size > 0) {
+//            return "Indexed!";
+//        } else {
+//            return "Not Indexed Yet!";
+//        }
+//    }
+//
     @Override
     public Image getIcon(int type) {
         return getCurrentImage();
@@ -94,6 +94,7 @@ public class BucketNode extends BeanNode<Bucket> {
             Utilities.actionsForPath("Actions/Bucket").get(1),
             null,
             Utilities.actionsForPath("Actions/Bucket").get(0),
+            SystemAction.get(RenameContainerAction.class),
             SystemAction.get(OpenLocalExplorerAction.class),
             null,
             SystemAction.get(DeleteAction.class)
@@ -102,6 +103,11 @@ public class BucketNode extends BeanNode<Bucket> {
 
     @Override
     public boolean canDestroy() {
+        return true;
+    }
+    
+    @Override
+    public boolean canRename() {
         return true;
     }
 
