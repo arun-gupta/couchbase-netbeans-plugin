@@ -6,12 +6,14 @@ import com.couchbase.client.java.query.N1qlQueryResult;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import org.netbeans.api.progress.ProgressUtils;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionRegistration;
 import org.openide.awt.DynamicMenuContent;
 import org.openide.util.ContextAwareAction;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle.Messages;
+import org.openide.util.RequestProcessor;
 import org.openide.util.Utilities;
 
 @ActionID(
@@ -27,6 +29,7 @@ import org.openide.util.Utilities;
 public final class CreatePrimaryIndexAction extends AbstractAction implements ContextAwareAction {
 
     private final Bucket bucket;
+    private final BucketNode bucketNode;
 
     public CreatePrimaryIndexAction() {
         this(Utilities.actionsGlobalContext());
@@ -35,6 +38,7 @@ public final class CreatePrimaryIndexAction extends AbstractAction implements Co
     public CreatePrimaryIndexAction(Lookup context) {
         super(Bundle.CTL_CreatePrimaryIndexAction());
         this.bucket = context.lookup(Bucket.class);
+        this.bucketNode = context.lookup(BucketNode.class);
         N1qlQueryResult query = bucket.query(N1qlQuery.simple(String.format("select * from system:indexes where keyspace_id = '" + bucket.name() + "'", bucket.name())));
         int size = query.allRows().size();
         if (size > 0) {
@@ -47,10 +51,20 @@ public final class CreatePrimaryIndexAction extends AbstractAction implements Co
 
     @Override
     public void actionPerformed(ActionEvent ev) {
-        String bucketName = bucket.name();
-        bucket.query(N1qlQuery.simple(String.format("create primary index on `" + bucketName + "`", bucketName)));
-        RefreshBucketListTrigger.trigger();
-        System.out.println("New primary index on: " + bucketName);
+        RequestProcessor.getDefault().post(new Runnable() {
+            @Override
+            public void run() {
+                final String bucketName = bucket.name();
+                ProgressUtils.showProgressDialogAndRun(new Runnable() {
+                    @Override
+                    public void run() {
+                        bucket.query(N1qlQuery.simple(String.format("create primary index on `" + bucketName + "`", bucketName)));
+//                        RefreshBucketListTrigger.trigger();
+                        bucketNode.refresh();
+                    }
+                }, "Indexing bucket '" + bucketName + "'...");
+            }
+        });
     }
 
     @Override

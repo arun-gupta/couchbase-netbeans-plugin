@@ -14,6 +14,7 @@ import static com.couchbase.client.java.query.Select.select;
 import java.awt.Image;
 import java.io.IOException;
 import org.openide.actions.DeleteAction;
+import org.openide.actions.OpenLocalExplorerAction;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Utilities;
 import org.openide.util.actions.SystemAction;
@@ -30,6 +31,7 @@ public class BucketNode extends BeanNode<Bucket> {
     @StaticResource
     private static final String UNINDEXED = BASE_ICON_PATH + "bucket/unindexed_icon.png";
     private final Bucket bucket;
+    private String oldDisplayName;
 
     public BucketNode(Bucket bean) throws IntrospectionException {
         this(bean, new InstanceContent());
@@ -40,17 +42,13 @@ public class BucketNode extends BeanNode<Bucket> {
         ic.add(bean);
         ic.add(this);
         this.bucket = bean;
+        oldDisplayName = getDisplayName();
     }
 
     private String getCurrentName() {
         N1qlQuery all = N1qlQuery.simple(select("*").from(i(bucket.name())));
         N1qlQueryResult result = bucket.query(all);
         return bucket.name() + " (" + result.allRows().size() + ")";
-    }
-
-    @Override
-    public String getName() {
-        return getCurrentName();
     }
 
     @Override
@@ -96,6 +94,7 @@ public class BucketNode extends BeanNode<Bucket> {
             Utilities.actionsForPath("Actions/Bucket").get(1),
             null,
             Utilities.actionsForPath("Actions/Bucket").get(0),
+            SystemAction.get(OpenLocalExplorerAction.class),
             null,
             SystemAction.get(DeleteAction.class)
         };
@@ -109,6 +108,11 @@ public class BucketNode extends BeanNode<Bucket> {
     @Override
     public void destroy() throws IOException {
         fireNodeDestroyed();
+    }
+    
+    public void refresh() {
+        fireIconChange();
+        fireOpenedIconChange();
     }
 
     @Override

@@ -12,13 +12,16 @@ import org.netbeans.api.progress.ProgressUtils;
 import org.netbeans.modules.couchbase.CouchbaseRootNode;
 import org.netbeans.modules.couchbase.bucket.BucketChildFactory;
 import org.netbeans.modules.couchbase.bucket.RefreshBucketListTrigger;
+import org.netbeans.modules.couchbase.connection.rename.RenameContainerAction;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.actions.NewAction;
+import org.openide.actions.OpenLocalExplorerAction;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
+import org.openide.util.RequestProcessor;
 import org.openide.util.Utilities;
 import org.openide.util.actions.SystemAction;
 import org.openide.util.datatransfer.NewType;
@@ -41,9 +44,16 @@ public class ConnectionNode extends AbstractNode {
     public Action[] getActions(boolean context) {
         return new Action[]{
             SystemAction.get(NewAction.class),
+            SystemAction.get(RenameContainerAction.class),
+            SystemAction.get(OpenLocalExplorerAction.class),
             null,
             Utilities.actionsForPath("Actions/Connection").get(0)
         };
+    }
+
+    @Override
+    public boolean canRename() {
+        return true;
     }
 
     @NbBundle.Messages({
@@ -74,14 +84,19 @@ public class ConnectionNode extends AbstractNode {
                     String password = NbPreferences.forModule(CouchbaseRootNode.class).get("clusterPassword", "error!");
                     final ClusterManager cmgr = cluster.clusterManager(login, password);
                     try {
-                        ProgressUtils.showProgressDialogAndRun(new Runnable() {
+                        RequestProcessor.getDefault().post(new Runnable() {
                             @Override
                             public void run() {
-                                cmgr.insertBucket(settings);
-                                NbPreferences.forModule(ConnectionNode.class).put("bucketName", bucketName);
-                                RefreshBucketListTrigger.trigger();
+                                ProgressUtils.showProgressDialogAndRun(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        cmgr.insertBucket(settings);
+                                        NbPreferences.forModule(ConnectionNode.class).put("bucketName", bucketName);
+                                        RefreshBucketListTrigger.trigger();
+                                    }
+                                }, "Creating bucket '" + bucketName + "'...");
                             }
-                        }, "Create bucket " + bucketName + "...");
+                        });
                     } catch (com.couchbase.client.core.CouchbaseException f) {
                         JOptionPane.showMessageDialog(null, f.getMessage());
                     }

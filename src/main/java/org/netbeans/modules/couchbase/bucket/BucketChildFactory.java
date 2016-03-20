@@ -13,8 +13,7 @@ import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import org.netbeans.api.progress.ProgressHandle;
-import org.netbeans.api.progress.ProgressHandleFactory;
+import org.netbeans.api.progress.ProgressUtils;
 import org.netbeans.modules.couchbase.CouchbaseRootNode;
 import org.netbeans.modules.couchbase.connection.ConnectionNode;
 import org.openide.nodes.ChildFactory;
@@ -25,6 +24,7 @@ import org.openide.nodes.NodeMemberEvent;
 import org.openide.nodes.NodeReorderEvent;
 import org.openide.util.Exceptions;
 import org.openide.util.NbPreferences;
+import org.openide.util.RequestProcessor;
 
 public class BucketChildFactory extends ChildFactory.Detachable<Bucket> implements NodeListener {
 
@@ -56,10 +56,7 @@ public class BucketChildFactory extends ChildFactory.Detachable<Bucket> implemen
                 final String bucketName = NbPreferences.forModule(ConnectionNode.class).get("bucketName", "error!");
                 if (!bucketName.equals("error!")) {
                     try {
-                        final Bucket newBucket = cluster.openBucket(bucketName);
-                        if (!bucketList.contains(newBucket)) {
-                            bucketList.add(newBucket);
-                        }
+                        bucketList.add(cluster.openBucket(bucketName));
                         refresh(true);
                     } catch (java.lang.RuntimeException e) {
                         JOptionPane.showMessageDialog(null, "Time out, please try again.");
@@ -85,6 +82,7 @@ public class BucketChildFactory extends ChildFactory.Detachable<Bucket> implemen
     }
 
     public class BucketNameComparator implements Comparator<Bucket> {
+
         public int compare(Bucket bucket1, Bucket bucket2) {
             return bucket1.name().compareTo(bucket2.name());
         }
@@ -104,15 +102,21 @@ public class BucketChildFactory extends ChildFactory.Detachable<Bucket> implemen
 
     @Override
     public void nodeDestroyed(NodeEvent ne) {
-        Bucket removedBucket = ne.getNode().getLookup().lookup(Bucket.class);
-        final String name = removedBucket.name();
-        ProgressHandle handle = ProgressHandleFactory.createSystemHandle("Removing bucket " + name + "...");
-        handle.start();
-        cmgr.removeBucket(name);
-        bucketList.remove(removedBucket);
-        NbPreferences.forModule(ConnectionNode.class).remove("bucketName");
-        refresh(true);
-        handle.finish();
+        final Bucket removedBucket = ne.getNode().getLookup().lookup(Bucket.class);
+        final String bucketName = removedBucket.name();
+        RequestProcessor.getDefault().post(new Runnable() {
+            @Override
+            public void run() {
+                ProgressUtils.showProgressDialogAndRun(new Runnable() {
+                    @Override
+                    public void run() {
+                        cmgr.removeBucket(bucketName);
+                        bucketList.remove(removedBucket);
+                        refresh(true);
+                    }
+                }, "Removing bucket '" + bucketName + "'...");
+            }
+        });
     }
 
     @Override
