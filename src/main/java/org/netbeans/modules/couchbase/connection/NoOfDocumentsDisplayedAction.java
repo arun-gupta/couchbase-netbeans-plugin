@@ -1,8 +1,8 @@
 package org.netbeans.modules.couchbase.connection;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.prefs.Preferences;
+import javax.swing.AbstractAction;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.awt.ActionID;
@@ -11,17 +11,21 @@ import org.openide.util.NbBundle.Messages;
 import org.openide.util.NbPreferences;
 
 @ActionID(
-        category = "Connection",
-        id = "org.netbeans.modules.couchbase.connection.PropertiesAction"
+        category = "SubItem",
+        id = "org.netbeans.modules.couchbase.connection.NoOfDocumentsDisplayedAction"
 )
 @ActionRegistration(
-        displayName = "#CTL_ServerDefaultsAction"
+        displayName = "#CTL_NoOfDocumentsDisplayedAction"
 )
-@Messages("CTL_ServerDefaultsAction=Server Defaults")
-public final class ServerDefaultsAction implements ActionListener {
+@Messages("CTL_NoOfDocumentsDisplayedAction=No. Of Documents Displayed")
+public final class NoOfDocumentsDisplayedAction extends AbstractAction {
+
+    public NoOfDocumentsDisplayedAction() {
+        super(Bundle.CTL_NoOfDocumentsDisplayedAction());
+    }
 
     @Override
-    public void actionPerformed(ActionEvent ev) {
+    public void actionPerformed(ActionEvent e) {
         Preferences pref = NbPreferences.forModule(ConnectionNode.class);
         String clusterName = pref.get("clusterName", "error!");
         String clusterDefaultNumber = pref.get(clusterName + "-defaultNumber", "3");
@@ -37,5 +41,5 @@ public final class ServerDefaultsAction implements ActionListener {
             pref.putInt(clusterName + "-defaultNumber", Integer.parseInt(inputText));
         }
     }
-
+    
 }
