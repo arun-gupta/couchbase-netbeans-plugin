@@ -25,7 +25,8 @@ import org.openide.util.RequestProcessor;
 import org.openide.util.Utilities;
 import org.openide.util.actions.SystemAction;
 import org.openide.util.datatransfer.NewType;
-import org.openide.util.lookup.Lookups;
+import org.openide.util.lookup.AbstractLookup;
+import org.openide.util.lookup.InstanceContent;
 
 public class ConnectionNode extends AbstractNode {
 
@@ -34,8 +35,14 @@ public class ConnectionNode extends AbstractNode {
     private final Cluster cluster;
 
     public ConnectionNode(Cluster cluster, String name) {
-        super(Children.create(new BucketChildFactory(cluster), false), Lookups.singleton(cluster));
+        this(cluster, name, new InstanceContent());
+    }
+
+    public ConnectionNode(Cluster cluster, String name, InstanceContent content) {
+        super(Children.create(new BucketChildFactory(cluster), false), new AbstractLookup(content));
         this.cluster = cluster;
+        content.add(this);
+        content.add(cluster);
         setDisplayName(name);
         setIconBaseWithExtension(ICON);
     }
