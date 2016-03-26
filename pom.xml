@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.netbeans.modules</groupId>
     <artifactId>NetBeansCouchbase</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.2-SNAPSHOT</version>
     <packaging>nbm</packaging>
     <build>
         <plugins>
@@ -66,7 +66,7 @@
         <dependency>
             <groupId>com.couchbase.client</groupId>
             <artifactId>java-client</artifactId>
-            <version>2.2.3</version>
+            <version>2.2.4</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
@@ -176,6 +176,11 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-api-progress-nb</artifactId>
+            <version>RELEASE81</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-modules-editor-lib2</artifactId>
             <version>RELEASE81</version>
         </dependency>
     </dependencies>
