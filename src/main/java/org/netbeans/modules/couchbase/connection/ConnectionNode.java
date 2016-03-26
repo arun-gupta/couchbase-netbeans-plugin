@@ -8,7 +8,7 @@ import java.io.IOException;
 import javax.swing.Action;
 import javax.swing.JOptionPane;
 import org.netbeans.api.annotations.common.StaticResource;
-import org.netbeans.api.progress.ProgressUtils;
+import org.netbeans.api.progress.BaseProgressUtils;
 import org.netbeans.modules.couchbase.CouchbaseRootNode;
 import org.netbeans.modules.couchbase.bucket.BucketChildFactory;
 import org.netbeans.modules.couchbase.bucket.RefreshBucketListTrigger;
@@ -54,7 +54,8 @@ public class ConnectionNode extends AbstractNode {
             SystemAction.get(RenameContainerAction.class),
             SystemAction.get(OpenLocalExplorerAction.class),
             null,
-            Utilities.actionsForPath("Actions/Connection").get(0)
+            Utilities.actionsForPath("Actions/Connection").get(0),
+            Utilities.actionsForPath("Actions/Connection").get(1)
         };
     }
 
@@ -74,7 +75,6 @@ public class ConnectionNode extends AbstractNode {
                 public String getName() {
                     return "Bucket...";
                 }
-
                 @Override
                 public void create() throws IOException {
                     NotifyDescriptor.InputLine nd = new NotifyDescriptor.InputLine(
@@ -94,7 +94,7 @@ public class ConnectionNode extends AbstractNode {
                         RequestProcessor.getDefault().post(new Runnable() {
                             @Override
                             public void run() {
-                                ProgressUtils.showProgressDialogAndRun(new Runnable() {
+                                BaseProgressUtils.showProgressDialogAndRun(new Runnable() {
                                     @Override
                                     public void run() {
                                         cmgr.insertBucket(settings);

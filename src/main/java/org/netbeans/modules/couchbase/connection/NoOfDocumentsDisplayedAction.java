@@ -11,7 +11,7 @@ import org.openide.util.NbBundle.Messages;
 import org.openide.util.NbPreferences;
 
 @ActionID(
-        category = "SubItem",
+        category = "Connection",
         id = "org.netbeans.modules.couchbase.connection.NoOfDocumentsDisplayedAction"
 )
 @ActionRegistration(
