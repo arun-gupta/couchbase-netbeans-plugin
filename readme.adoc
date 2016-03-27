@@ -5,16 +5,60 @@ This repository is the work-in-progress for Netbeans plugin for Couchbase. You c
 . How to create a NetBeans plugin
 . Learn Couchbase APIs that will allow you to embed within other tools
 . Have a ready to use plugin that will allow you to configure Couchbase in NetBeans
-.. Part 1
-... GitHub repository created
-... Started a new NetBeans plugin
-... Couchbase Node configured in NetBeans
-.. Part 2
-... Installed and set up Couchbase server
-... Checked out https://github.com/arun-gupta/couchbase-javaee using Git in NetBeans
-... Succeeded to run the above from NetBeans, without a problem, to WildFly
-... Created a new NetBeans plugin for Couchbase, using Maven
-... Used utility methods to connect to the Couchbase server from the Mavenized NetBeans plugin
+
+== Episodes
+
+All the episodes are available in this playlist:
+
+video::QO851I3jAnA[]
+
+=== Part 1
+. GitHub repository for the plugin
+. Started a new NetBeans plugin – discussed Ant vs Maven approach for starting a plugin
+. Couchbase node configured in NetBeans
+
+=== Part 2
+. Show NetBeans users how to install Couchbase and configure it with a sample bucket
+. Run a simple Java EE application that queries the documents stored in Couchbase sample bucket
+. Migrating the NetBeans plugin from Ant to Maven
+. Show a message in popup help menu
+. Double clicking on the Couchbase node connects to Couchbase server and displays a message in status window
+
+=== Part 3
+. Login to Couchbase server
+. See Bucket list
+. See Documents in Bucket
+. Query data from buckets (basic queries, N1QL queries coming later)
+. Compare Documents (NetBeans Diff Viewer)
+. Open Documents (in JSON editor, not savable back to Couchbase)
+. Multiple Couchbase hosts can be configured
+
+=== Part 4
+. Entry point of a NetBeans plugin
+. Learn about NetBeans platform node hierarchy
+. Property sheet for each node
+. Keeping code organized for the plugin
+. Creating menus for different nodes
+
+=== Part 5
+. Showcase features that have been created in the plugin so far
+. Show different icons for indexed and non-indexed buckets in Couchbase
+
+=== Part 6
+. Add a new menu “Create Primary Index” for non-indexed buckets
+. Started work on refreshing the name and description of a bucket after indexing
+. Started work on optimizing the number of documents retrieved for a bucket
+
+=== Part 7
+. Discussion around modal window vs status bar when creating bucket
+. Icons for newly created buckets are shown correctly as non-indexed
+. Change the menu name from "Set Primary Index" to "Create Primary Index"
+. Discussion around properties panel vs menu items design pattern
+. "Explore from here" for nodes and buckets
+. Default error handling (by NetBeans platform) while editing JSON document
+. Rename buckets (only in NetBeans view, not in database)
+. Discussion around REST endpoint code generator using a bucket
+. Displayed a dialog when JSON document is edited/saved
 
 Upcoming list of features: https://github.com/arun-gupta/couchbase-netbeans-plugin/issues
 
