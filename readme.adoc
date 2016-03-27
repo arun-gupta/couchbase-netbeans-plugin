@@ -8,9 +8,7 @@ This repository is the work-in-progress for Netbeans plugin for Couchbase. You c
 
 == Episodes
 
-All the episodes are available in this playlist:
-
-video::QO851I3jAnA[]
+All the episodes are available in https://www.youtube.com/watch?v=QO851I3jAnA&list=PLcspbWiU9Ruu_0TLzeWB_VmUUixFjwBwk[this playlist].
 
 === Part 1
 . GitHub repository for the plugin
