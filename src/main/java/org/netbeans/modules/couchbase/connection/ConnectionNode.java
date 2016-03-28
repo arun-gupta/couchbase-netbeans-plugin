@@ -1,15 +1,19 @@
 package org.netbeans.modules.couchbase.connection;
 
+import com.couchbase.client.java.Bucket;
 import com.couchbase.client.java.Cluster;
 import com.couchbase.client.java.cluster.BucketSettings;
 import com.couchbase.client.java.cluster.ClusterManager;
 import com.couchbase.client.java.cluster.DefaultBucketSettings;
+import com.couchbase.client.java.query.N1qlQuery;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import javax.swing.Action;
+import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import org.netbeans.api.annotations.common.StaticResource;
 import org.netbeans.api.progress.BaseProgressUtils;
-import org.netbeans.modules.couchbase.CouchbaseRootNode;
 import org.netbeans.modules.couchbase.bucket.BucketChildFactory;
 import org.netbeans.modules.couchbase.bucket.RefreshBucketListTrigger;
 import org.netbeans.modules.couchbase.connection.rename.RenameContainerAction;
@@ -32,14 +36,23 @@ public class ConnectionNode extends AbstractNode {
 
     @StaticResource
     private static final String ICON = "org/netbeans/modules/couchbase/connection.png";
+
+    private ClusterManager cmgr;
     private final Cluster cluster;
 
-    public ConnectionNode(Cluster cluster, String name) {
-        this(cluster, name, new InstanceContent());
+    public ConnectionNode(Cluster cluster, ClusterManager cmgr, String name) {
+        this(cluster, cmgr, name, new InstanceContent());
     }
 
-    public ConnectionNode(Cluster cluster, String name, InstanceContent content) {
-        super(Children.create(new BucketChildFactory(cluster), false), new AbstractLookup(content));
+    public ConnectionNode(
+            Cluster cluster,
+            ClusterManager cmgr,
+            String name,
+            InstanceContent content) {
+        super(Children.create(
+                new BucketChildFactory(cluster, cmgr), true),
+                new AbstractLookup(content));
+        this.cmgr = cmgr;
         this.cluster = cluster;
         content.add(this);
         content.add(cluster);
@@ -75,38 +88,52 @@ public class ConnectionNode extends AbstractNode {
                 public String getName() {
                     return "Bucket...";
                 }
+
                 @Override
                 public void create() throws IOException {
-                    NotifyDescriptor.InputLine nd = new NotifyDescriptor.InputLine(
-                            "Bucket name:",
+                    final CreateBucketForm cbf = new CreateBucketForm();
+                    NotifyDescriptor.Confirmation nd = new NotifyDescriptor.Confirmation(
+                            cbf,
                             "Create bucket");
-                    DialogDisplayer.getDefault().notify(nd);
-                    final String bucketName = nd.getInputText();
-                    final BucketSettings settings = DefaultBucketSettings
-                            .builder()
-                            .name(bucketName)
-                            .quota(100)
-                            .build();
-                    String login = NbPreferences.forModule(CouchbaseRootNode.class).get("clusterLogin", "error!");
-                    String password = NbPreferences.forModule(CouchbaseRootNode.class).get("clusterPassword", "error!");
-                    final ClusterManager cmgr = cluster.clusterManager(login, password);
-                    try {
-                        RequestProcessor.getDefault().post(new Runnable() {
-                            @Override
-                            public void run() {
-                                BaseProgressUtils.showProgressDialogAndRun(new Runnable() {
+                    JButton ok = new JButton();
+                    ok.setText("OK");
+                    JButton cancel = new JButton();
+                    cancel.setText("Cancel");
+                    nd.setOptions(new Object[]{ok, cancel});
+                    ok.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent arg0) {
+                            final Boolean indexable = cbf.getIndexable();
+                            final String bucketName = cbf.getBucketName();
+                            final BucketSettings settings = DefaultBucketSettings
+                                    .builder()
+                                    .name(bucketName)
+                                    .quota(100)
+                                    .build();
+                            try {
+                                RequestProcessor.getDefault().post(new Runnable() {
                                     @Override
                                     public void run() {
-                                        cmgr.insertBucket(settings);
-                                        NbPreferences.forModule(ConnectionNode.class).put("bucketName", bucketName);
-                                        RefreshBucketListTrigger.trigger();
+                                        BaseProgressUtils.showProgressDialogAndRun(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                cmgr.insertBucket(settings);
+                                                NbPreferences.forModule(ConnectionNode.class).put("bucketName", bucketName);
+                                                Bucket bucket = cluster.openBucket(bucketName);
+                                                if (indexable) {
+                                                    bucket.query(N1qlQuery.simple(String.format("create primary index on `" + bucketName + "`", bucketName)));
+                                                }
+                                                RefreshBucketListTrigger.trigger();
+                                            }
+                                        }, "Creating bucket '" + bucketName + "'...");
                                     }
-                                }, "Creating bucket '" + bucketName + "'...");
+                                });
+                            } catch (com.couchbase.client.core.CouchbaseException f) {
+                                JOptionPane.showMessageDialog(null, f.getMessage());
                             }
-                        });
-                    } catch (com.couchbase.client.core.CouchbaseException f) {
-                        JOptionPane.showMessageDialog(null, f.getMessage());
-                    }
+                        }
+                    });
+                    DialogDisplayer.getDefault().notify(nd);
                 }
             }
         };

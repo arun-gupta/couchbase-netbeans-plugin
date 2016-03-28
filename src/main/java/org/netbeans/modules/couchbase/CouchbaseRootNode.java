@@ -7,7 +7,6 @@ import java.io.IOException;
 import javax.swing.Action;
 import javax.swing.JButton;
 import org.netbeans.api.annotations.common.StaticResource;
-import org.netbeans.modules.couchbase.connection.RefreshConnectionListTrigger;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.actions.NewAction;
@@ -84,7 +83,6 @@ public class CouchbaseRootNode extends AbstractNode {
                             NbPreferences.forModule(CouchbaseRootNode.class).put("clusterAddress", address);
                             NbPreferences.forModule(CouchbaseRootNode.class).put("clusterLogin", login);
                             NbPreferences.forModule(CouchbaseRootNode.class).put("clusterPassword", password);
-                            RefreshConnectionListTrigger.trigger();
                         }
                     });
                     DialogDisplayer.getDefault().notify(nd);

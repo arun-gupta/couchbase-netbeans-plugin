@@ -2,51 +2,30 @@ package org.netbeans.modules.couchbase.connection;
 
 import com.couchbase.client.java.Cluster;
 import com.couchbase.client.java.CouchbaseCluster;
+import com.couchbase.client.java.cluster.ClusterManager;
 import com.couchbase.client.java.env.CouchbaseEnvironment;
 import com.couchbase.client.java.env.DefaultCouchbaseEnvironment;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
+import java.util.prefs.PreferenceChangeEvent;
+import java.util.prefs.PreferenceChangeListener;
+import javax.swing.JOptionPane;
 import org.netbeans.modules.couchbase.CouchbaseRootNode;
+import org.openide.awt.StatusDisplayer;
 import org.openide.nodes.ChildFactory;
 import org.openide.nodes.Node;
 import org.openide.util.NbPreferences;
+import org.openide.util.RequestProcessor;
 
-public class ConnectionChildFactory extends ChildFactory.Detachable<Cluster> {
+public class ConnectionChildFactory extends ChildFactory.Detachable<Cluster> implements PreferenceChangeListener {
 
     private final List<Cluster> clusters;
-
-    private ChangeListener listener;
+    private String clusterAddress;
+    private String clusterName;
+    private ClusterManager clusterManager;
 
     public ConnectionChildFactory() {
         this.clusters = new ArrayList<Cluster>();
-    }
-
-    @Override
-    protected void addNotify() {
-        RefreshConnectionListTrigger.addChangeListener(listener = new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent ev) {
-                String clusterName = NbPreferences.forModule(CouchbaseRootNode.class).get("clusterAddress", "error!");
-                CouchbaseEnvironment env = DefaultCouchbaseEnvironment.builder()
-                        .connectTimeout(60000) //default is 5s
-                        .build();
-                System.out.println("Create connection");
-                //use the env during cluster creation to apply
-                Cluster cluster = CouchbaseCluster.create(env, clusterName);
-                clusters.add(cluster);
-                refresh(false);
-            }
-        });
-    }
-
-    @Override
-    protected void removeNotify() {
-        if (listener != null) {
-            RefreshConnectionListTrigger.removeChangeListener(listener);
-            listener = null;
-        }
     }
 
     @Override
@@ -56,9 +35,47 @@ public class ConnectionChildFactory extends ChildFactory.Detachable<Cluster> {
     }
 
     @Override
-    protected Node createNodeForKey(Cluster key) {
-        String clusterName = NbPreferences.forModule(CouchbaseRootNode.class).get("clusterName", "error!");
-        return new ConnectionNode(key, clusterName);
+    protected Node createNodeForKey(Cluster cluster) {
+        return new ConnectionNode(cluster, clusterManager, clusterName);
+    }
+
+    @Override
+    public void preferenceChange(PreferenceChangeEvent evt) {
+        if (evt.getKey().equals("clusterName")) {
+            clusterName = evt.getNewValue();
+            try {
+                clusterAddress = NbPreferences.forModule(CouchbaseRootNode.class).get("clusterAddress", "localhost");
+                String login = NbPreferences.forModule(CouchbaseRootNode.class).get("clusterLogin", "error!");
+                String password = NbPreferences.forModule(CouchbaseRootNode.class).get("clusterPassword", "error!");
+                CouchbaseEnvironment env = DefaultCouchbaseEnvironment.builder()
+                        .queryEnabled(true)
+                        .build();
+                Cluster cluster = CouchbaseCluster.create(env, clusterAddress);
+                clusterManager = cluster.clusterManager(login, password);
+                clusters.add(cluster);
+                refresh(true);
+                StatusDisplayer.getDefault().setStatusText("New cluster.");
+            } catch (com.couchbase.client.java.error.InvalidPasswordException e) {
+                RequestProcessor.getDefault().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        String msg = "Invalid login credentials";
+                        JOptionPane.showMessageDialog(null, msg);
+                        StatusDisplayer.getDefault().setStatusText(msg);
+                    }
+                });
+            }
+        }
+    }
+
+    @Override
+    protected void addNotify() {
+        NbPreferences.forModule(CouchbaseRootNode.class).addPreferenceChangeListener(this);
+    }
+
+    @Override
+    protected void removeNotify() {
+        NbPreferences.forModule(CouchbaseRootNode.class).removePreferenceChangeListener(this);
     }
 
 }

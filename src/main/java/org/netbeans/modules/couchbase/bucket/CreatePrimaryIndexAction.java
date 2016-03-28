@@ -6,7 +6,7 @@ import com.couchbase.client.java.query.N1qlQueryResult;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import org.netbeans.api.progress.ProgressUtils;
+import org.netbeans.api.progress.BaseProgressUtils;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionRegistration;
 import org.openide.awt.DynamicMenuContent;
@@ -25,7 +25,7 @@ import org.openide.util.Utilities;
         asynchronous = true,
         displayName = "#CTL_CreatePrimaryIndexAction"
 )
-@Messages("CTL_CreatePrimaryIndexAction=Set Primary Index")
+@Messages("CTL_CreatePrimaryIndexAction=Create Primary Index")
 public final class CreatePrimaryIndexAction extends AbstractAction implements ContextAwareAction {
 
     private final Bucket bucket;
@@ -55,11 +55,10 @@ public final class CreatePrimaryIndexAction extends AbstractAction implements Co
             @Override
             public void run() {
                 final String bucketName = bucket.name();
-                ProgressUtils.showProgressDialogAndRun(new Runnable() {
+                BaseProgressUtils.showProgressDialogAndRun(new Runnable() {
                     @Override
                     public void run() {
                         bucket.query(N1qlQuery.simple(String.format("create primary index on `" + bucketName + "`", bucketName)));
-//                        RefreshBucketListTrigger.trigger();
                         bucketNode.refresh();
                     }
                 }, "Indexing bucket '" + bucketName + "'...");

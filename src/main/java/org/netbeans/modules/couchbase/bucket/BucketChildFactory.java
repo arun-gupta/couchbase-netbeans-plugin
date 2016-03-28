@@ -2,18 +2,22 @@ package org.netbeans.modules.couchbase.bucket;
 
 import com.couchbase.client.java.Bucket;
 import com.couchbase.client.java.Cluster;
+import com.couchbase.client.java.CouchbaseCluster;
 import com.couchbase.client.java.cluster.BucketSettings;
 import com.couchbase.client.java.cluster.ClusterManager;
+import com.couchbase.client.java.env.CouchbaseEnvironment;
+import com.couchbase.client.java.env.DefaultCouchbaseEnvironment;
 import java.beans.IntrospectionException;
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import javax.swing.JOptionPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import org.netbeans.api.progress.ProgressUtils;
+import org.netbeans.api.progress.BaseProgressUtils;
 import org.netbeans.modules.couchbase.CouchbaseRootNode;
 import org.netbeans.modules.couchbase.connection.ConnectionNode;
 import org.openide.nodes.ChildFactory;
@@ -25,6 +29,8 @@ import org.openide.nodes.NodeReorderEvent;
 import org.openide.util.Exceptions;
 import org.openide.util.NbPreferences;
 import org.openide.util.RequestProcessor;
+import rx.Observable;
+import rx.functions.Func1;
 
 public class BucketChildFactory extends ChildFactory.Detachable<Bucket> implements NodeListener {
 
@@ -36,32 +42,41 @@ public class BucketChildFactory extends ChildFactory.Detachable<Bucket> implemen
 
     private ClusterManager cmgr;
 
-    public BucketChildFactory(Cluster cluster) {
+    public BucketChildFactory(Cluster cluster, ClusterManager cmgr) {
         this.cluster = cluster;
+        this.cmgr = cmgr;
+        this.bucketList = new ArrayList<Bucket>();
+        for (BucketSettings bs : cmgr.getBuckets()) {
+            if (!bs.name().equals("default")) {
+                Bucket bucket = cluster.openBucket(bs.name());
+                bucketList.add(bucket);
+            }
+        }
     }
 
     @Override
     protected void addNotify() {
-        this.bucketList = new ArrayList<Bucket>();
-        String login = NbPreferences.forModule(CouchbaseRootNode.class).get("clusterLogin", "error!");
-        String password = NbPreferences.forModule(CouchbaseRootNode.class).get("clusterPassword", "error!");
-        cmgr = cluster.clusterManager(login, password);
-        for (BucketSettings bs : cmgr.getBuckets()) {
-            Bucket bucket = cluster.openBucket(bs.name());
-            bucketList.add(bucket);
-        }
         RefreshBucketListTrigger.addChangeListener(listener = new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent ev) {
-                final String bucketName = NbPreferences.forModule(ConnectionNode.class).get("bucketName", "error!");
-                if (!bucketName.equals("error!")) {
-                    try {
-                        bucketList.add(cluster.openBucket(bucketName));
-                        refresh(true);
-                    } catch (java.lang.RuntimeException e) {
-                        JOptionPane.showMessageDialog(null, "Time out, please try again.");
+                RequestProcessor.getDefault().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        BaseProgressUtils.showProgressDialogAndRun(new Runnable() {
+                            @Override
+                            public void run() {
+                                final String bucketName = NbPreferences.forModule(ConnectionNode.class
+                                ).get("bucketName", "error!");
+                                if (!bucketName.equals("error!")) {
+                                    if (cmgr.hasBucket(bucketName)) {
+                                        bucketList.add(cluster.openBucket(bucketName, 1000, TimeUnit.SECONDS));
+                                        refresh(true);
+                                    }
+                                }
+                            }
+                        }, "Refreshing buckets...");
                     }
-                }
+                });
             }
         });
     }
@@ -79,6 +94,7 @@ public class BucketChildFactory extends ChildFactory.Detachable<Bucket> implemen
         Collections.sort(bucketList, new BucketNameComparator());
         list.addAll(bucketList);
         return true;
+
     }
 
     public class BucketNameComparator implements Comparator<Bucket> {
@@ -107,12 +123,18 @@ public class BucketChildFactory extends ChildFactory.Detachable<Bucket> implemen
         RequestProcessor.getDefault().post(new Runnable() {
             @Override
             public void run() {
-                ProgressUtils.showProgressDialogAndRun(new Runnable() {
+                BaseProgressUtils.showProgressDialogAndRun(new Runnable() {
                     @Override
                     public void run() {
-                        cmgr.removeBucket(bucketName);
-                        bucketList.remove(removedBucket);
-                        refresh(true);
+                        try {
+                            if (cmgr.hasBucket(bucketName)) {
+                                cmgr.removeBucket(bucketName);
+                                bucketList.remove(removedBucket);
+                                refresh(true);
+                            }
+                        } catch (com.couchbase.client.core.endpoint.kv.AuthenticationException e) {
+                            JOptionPane.showMessageDialog(null, "error");
+                        }
                     }
                 }, "Removing bucket '" + bucketName + "'...");
             }

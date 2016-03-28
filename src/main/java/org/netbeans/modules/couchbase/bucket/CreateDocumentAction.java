@@ -6,10 +6,12 @@ import com.couchbase.client.java.document.json.JsonObject;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.netbeans.modules.couchbase.connection.ConnectionNode;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionRegistration;
 import org.openide.awt.StatusDisplayer;
 import org.openide.util.NbBundle.Messages;
+import org.openide.util.NbPreferences;
 
 @ActionID(
         category = "Bucket",
@@ -35,6 +37,7 @@ public final class CreateDocumentAction implements ActionListener {
         JsonObject content = JsonObject.empty().put("name", "Michael");
         JsonDocument doc = JsonDocument.create(String.valueOf(count), content);
         bucket.insert(doc);
+        NbPreferences.forModule(ConnectionNode.class).remove("bucketName");
         RefreshBucketListTrigger.trigger();
         StatusDisplayer.getDefault().setStatusText("New document: " + count);
     }
